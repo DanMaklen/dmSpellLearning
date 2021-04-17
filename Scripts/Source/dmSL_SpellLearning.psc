@@ -6,20 +6,20 @@ dmSL_State Property dmSL_StateRef Auto
 
 ; Global Variables
 GlobalVariable Property dmSL_ConsumeBookOnLearn Auto
-GlobalVariable Property dmSL_BaseSessionProgress Auto
+GlobalVariable Property dmSL_BaseLearnRate Auto
 
 ; Auto Set Properties
 Sound Property UISpellLearnedSound Auto
-Actor Property playerRef Auto
+Actor Property PlayerRef Auto
 
 Event OnSpellTomeRead(Book spellBook, Spell spellLearned, ObjectReference bookContainer)
-    If (playerRef.HasSpell(spellLearned))
+    If (PlayerRef.HasSpell(spellLearned))
         PrintAlreadyKnowSpell(spellLearned)
         dmSL_StateRef.SetProgress(spellLearned, 100.0) ; To detect spells learned before mod installation
         Return
     EndIf
 
-    bool isStudyCompleted = StudySpell(spellLearned)
+    bool isStudyCompleted = StudyFor(spellLearned, 1.0)
 
     If (isStudyCompleted && dmSL_ConsumeBookOnLearn.GetValue())
         ConsumeSpellBook(spellBook, bookContainer)
@@ -33,41 +33,41 @@ EndFunction
 Function PrintLearnedNewSpell(Spell spellLearned)
     Debug.Notification("Learned spell: " + spellLearned.GetName() + ".")
 EndFunction
-Function PrintProgress(Spell spellLearned, float progress, float sessionProgress)
-    Debug.Notification("Learning spell: " + spellLearned.GetName() + ". Progress: " + progress as int + "% (+" + sessionProgress as int + "%)")
+Function PrintProgress(Spell spellLearned, float progress, float progressDelta)
+    Debug.Notification("Learning spell: " + spellLearned.GetName() + ". Progress: " + progress as int + "% (+" + progressDelta as int + "%)")
 EndFunction
 
 ; Logic
-bool Function StudySpell(Spell spellLearned)
-    float sessionProgress = CalculateSessionProgress(spellLearned)
+bool Function StudyFor(Spell spellLearned, float sessionDuration)
+    float progressDelta = CalculateLearnRate(spellLearned) * sessionDuration
     float progress = dmSL_StateRef.GetProgress(spellLearned)
-    progress += sessionProgress
+    progress += progressDelta
     dmSL_StateRef.SetProgress(spellLearned, progress)
     If (progress >= 100.0)
         LearnSpell(spellLearned)
         Return true
     EndIf
-    PrintProgress(spellLearned, progress, sessionProgress)
+    PrintProgress(spellLearned, progress, progressDelta)
     Return false
 EndFunction
 
 Function LearnSpell(Spell spellLearned)
-    playerRef.AddSpell(spellLearned, false)
-    UISpellLearnedSound.Play(playerRef)
+    PlayerRef.AddSpell(spellLearned, false)
+    UISpellLearnedSound.Play(PlayerRef)
     PrintLearnedNewSpell(spellLearned)
 EndFunction
 
 Function ConsumeSpellBook(Book spellBook, ObjectReference bookContainer = none)
     If !bookContainer
-        bookContainer = playerRef
+        bookContainer = PlayerRef
     EndIf
 
     bookContainer.RemoveItem(spellBook, 1, true)
 EndFunction
 
 ; Progress Calculation
-float Function CalculateSessionProgress(Spell spellLearned)
-    Return dmSL_BaseSessionProgress.GetValue() * (1 + CalculateProficiencyModifier(spellLearned))
+float Function CalculateLearnRate(Spell spellLearned)
+    Return dmSL_BaseLearnRate.GetValue() * (1 + CalculateProficiencyModifier(spellLearned))
 EndFunction
 float Function CalculateProficiencyModifier(Spell spellLearned)
     float proficiencyMod = 0.0
@@ -82,7 +82,7 @@ float Function CalculateProficiencyModifier(Spell spellLearned)
     
 EndFunction
 float Function CalculateSchoolProficiencyModifier(string School, int spellComplexity)
-    Return (playerRef.GetAV(school) - spellComplexity) / 100
+    Return (PlayerRef.GetAV(school) - spellComplexity) / 100
 EndFunction
 
 ; Setup
