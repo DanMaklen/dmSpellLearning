@@ -1,8 +1,12 @@
 Scriptname dmSL_SpellLearning extends ReferenceAlias
 {Core Script that handles Spell Learning}
 
-Sound Property UISpellLearnedSound Auto
+; Global Variables
 GlobalVariable Property dmSL_ConsumeBookOnLearn Auto
+GlobalVariable Property dmSL_BaseSessionProgress Auto
+
+; Auto Set Properties
+Sound Property UISpellLearnedSound Auto
 Actor Property playerRef Auto
 
 Event OnInit()
@@ -15,13 +19,18 @@ Event OnSpellTomeRead(Book spellBook, Spell spellLearned, ObjectReference bookCo
         Return
     EndIf
     
-    LearnSpell(spellLearned)
+    If (StudySpell(spellLearned))
+        LearnSpell(spellLearned)
 
-    If (dmSL_ConsumeBookOnLearn)
-        ConsumeSpellBook(spellBook, bookContainer)
+        If (dmSL_ConsumeBookOnLearn.GetValue())
+            ConsumeSpellBook(spellBook, bookContainer)
+        EndIf
     EndIf
+
+    JDB.writeToFile("HelloJDB")
 EndEvent
 
+; Notification Messages
 Function PrintAlreadyKnowSpell(Spell spellLearned)
     Debug.Notification("Known spell: " + spellLearned.GetName() + ".")
 EndFunction
@@ -34,6 +43,21 @@ Function PrintProgress(Spell spellLearned, float progress, float sessionProgress
     Debug.Notification("Learning spell: " + spellLearned.GetName() + ". Progress: " + progress as int + "% (+" + sessionProgress as int + "%)")
 EndFunction
 
+; Logic
+bool Function StudySpell(Spell spellLearned)
+    float sessionProgress = CalculateSessionProgress(spellLearned)
+    float progress = dmSL_State.GetProgress(spellLearned)
+    progress += sessionProgress
+    dmSL_State.SetProgress(spellLearned, progress)
+    PrintProgress(spellLearned, progress, sessionProgress)
+    return progress >= 100.0
+EndFunction
+
+Function LearnSpell(Spell spellLearned)
+    playerRef.AddSpell(spellLearned, false)
+    UISpellLearnedSound.Play(playerRef)
+EndFunction
+
 Function ConsumeSpellBook(Book spellBook, ObjectReference bookContainer = none)
     If !bookContainer
         bookContainer = playerRef
@@ -42,28 +66,33 @@ Function ConsumeSpellBook(Book spellBook, ObjectReference bookContainer = none)
     bookContainer.RemoveItem(spellBook, 1, true)
 EndFunction
 
-Function LearnSpell(Spell spellLearned)
-    playerRef.AddSpell(spellLearned, false)
-    UISpellLearnedSound.Play(playerRef)
+; Progress Calculation
+float Function CalculateSessionProgress(Spell spellLearned)
+    float proficiencyMod = CalculateProficiencyModifier(spellLearned)
+    Return dmSL_BaseSessionProgress.GetValue() * (1 + proficiencyMod)
 EndFunction
 
+float Function CalculateProficiencyModifier(Spell spellLearned)
+    string school = none
+    int maxEffectLevel = 0
 
-; int function LearnSpell(Spell spellLearned) global
-;     float progress = JDB.solveFlt(JDBKey("progress"), 0.0)
-;     float increase = CalculateRate(spellLearned)
-;     progress = progress + increase
-;     JDB.solveFltSetter(JDBKey("progress"), progress, true)
-    
-;     int ret = JMap.object()
-;     JMap.setFlt(ret, ".progress", progress)
-;     JMap.setFlt(ret, ".increase", increase)
-;     return ret
-; endfunction
+    MagicEffect[] effectList = spellLearned.GetMagicEffects()
+    int i = 0
+    While (i < effectList.Length)
+        MagicEffect effect = effectList[i]
+        string effectSchool = effect.GetAssociatedSkill()
+        int effectLevel = effect.GetSkillLevel()
 
-; float function CalculateRate(Spell spellLearned) global
-;     return 10.0
-; endfunction
+        If (!school)
+            school = effectSchool
+        EndIf
+        
+        If (maxEffectLevel < effectLevel)
+            maxEffectLevel = effectLevel
+        EndIf
+        i += 1
+    EndWhile
 
-; string function JDBKey(string relPath) global
-;     return ".dmSL_JDBRoot" + relPath
-; endfunction
+    float schoolLevel = playerRef.GetAV(school)
+    Return (schoolLevel - maxEffectLevel) / 100
+EndFunction
