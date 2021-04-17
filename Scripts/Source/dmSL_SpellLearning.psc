@@ -9,7 +9,6 @@ Actor playerRef
 Event OnInit()
     playerRef = Game.GetPlayer()
     DEST_ReferenceAliasExt.RegisterForSpellTomeReadEvent(self)
-    Debug.Notification("[DM] Spell Learning is initialized")
 EndEvent
 
 Event OnSpellTomeRead(Book spellBook, Spell spellLearned, ObjectReference bookContainer)
