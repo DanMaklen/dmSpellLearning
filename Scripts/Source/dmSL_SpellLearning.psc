@@ -15,6 +15,7 @@ Actor Property playerRef Auto
 Event OnSpellTomeRead(Book spellBook, Spell spellLearned, ObjectReference bookContainer)
     If (playerRef.HasSpell(spellLearned))
         PrintAlreadyKnowSpell(spellLearned)
+        dmSL_StateRef.SetProgress(spellLearned, 100.0) ; To detect spells learned before mod installation
         Return
     EndIf
 
