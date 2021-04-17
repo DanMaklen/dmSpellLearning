@@ -1,66 +1,57 @@
 Scriptname dmSL_SpellLearning extends ReferenceAlias
 {Core Script that handles Spell Learning}
 
-import DEST_ReferenceAliasExt
-
 Sound Property UISpellLearnedSound Auto
-Message Property dmSL_AlreadyLearnedSpellMessage Auto
+GlobalVariable Property dmSL_ConsumeBookOnLearn Auto
 
 Actor playerRef
 
 Event OnInit()
     playerRef = Game.GetPlayer()
-    RegisterForSpellTomeReadEvent(self)
+    DEST_ReferenceAliasExt.RegisterForSpellTomeReadEvent(self)
     Debug.Notification("[DM] Spell Learning is initialized")
 EndEvent
 
 Event OnSpellTomeRead(Book spellBook, Spell spellLearned, ObjectReference bookContainer)
     Debug.Notification("[DM] Reading Spell Tome: (Book: " + spellBook.GetName() + ", Spell: " + spellLearned.GetName() + ", container: " + bookContainer.GetFormId() + ")")
+
     If (playerRef.HasSpell(spellLearned))
-        Debug.Notification("Y")
-        return
+        PrintAlreadyKnowSpell(spellLearned)
+        Return
     EndIf
     
-    UISpellLearnedSound.Play(playerRef)
-    ; if dmSL_GVS_Consume
-    ;     consumeSpellBook(spellBook, bookContainer)
-    ; endif
+    LearnSpell(spellLearned)
 
-    ; if !playerRef.HasSpell(akSpell)
-	; 	;/ Don't eat the book
-	; 	if akContainer
-	; 		akContainer.RemoveItem(akBook, 1, abSilent = true)
-	; 	else
-	; 		playerRef.RemoveItem(akBook, 1, abSilent = true)
-	; 	endif
-	; 	/;
+    If (dmSL_ConsumeBookOnLearn)
+        ConsumeSpellBook(spellBook, bookContainer)
+    EndIf
+EndEvent
 
-	; 	string sSpellAdded = Game.GetGameSettingString("sSpellAdded")
-	; 	string sText = sSpellAdded + ": " + akSpell.GetName()
-	; 	playerRef.AddSpell(akSpell, abVerbose = false)
-
-	; 	Notification(sText, "UISpellLearned")
-	; else
-	; 	string sAlreadyKnown = Game.GetGameSettingString("sAlreadyKnown")
-	; 	string sText = sAlreadyKnown + " " + akSpell.GetName()
-
-	; 	Notification(sText)
-	; endif
-endevent
-
-; event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
-;     if(akBaseObject.HasKeyword(VendorItemSpellTome))
-;         Debug.Notification("Reading: " + akBaseObject.GetName())
-;     endif
-; endevent
-
-Function consumeSpellBook(Book spellBook, ObjectReference bookContainer = none)
-    if !bookContainer
-        bookContainer = playerRef
-    endif
-
-    bookContainer.RemoveItem(spellBook, 1, false)
+Function PrintAlreadyKnowSpell(Spell spellLearned)
+    Debug.Notification("Known spell: " + spellLearned.GetName() + ".")
 EndFunction
+
+Function PrintLearnedNewSpell(Spell spellLearned)
+    Debug.Notification("Learned spell: " + spellLearned.GetName() + ".")
+EndFunction
+
+Function PrintProgress(Spell spellLearned, float progress, float sessionProgress)
+    Debug.Notification("Learning spell: " + spellLearned.GetName() + ". Progress: " + progress as int + "% (+" + sessionProgress as int + "%)")
+EndFunction
+
+Function ConsumeSpellBook(Book spellBook, ObjectReference bookContainer = none)
+    If !bookContainer
+        bookContainer = playerRef
+    EndIf
+
+    bookContainer.RemoveItem(spellBook, 1, true)
+EndFunction
+
+Function LearnSpell(Spell spellLearned)
+    playerRef.AddSpell(spellLearned, false)
+    UISpellLearnedSound.Play(playerRef)
+EndFunction
+
 
 ; int function LearnSpell(Spell spellLearned) global
 ;     float progress = JDB.solveFlt(JDBKey("progress"), 0.0)

@@ -7,7 +7,6 @@ bool cVal = false
 bool dVal = false
 
 event OnPageReset(string page)
-	dmSL_SpellLearning.LearnSpell()
 	SetCursorFillMode(TOP_TO_BOTTOM)
 	SetCursorPosition(0) ; Can be removed because it starts at 0 anyway
 	AddHeaderOption("Group 5")
