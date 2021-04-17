@@ -5,7 +5,7 @@
 - No compatbility patch required
 
 ## Ideas & Future Improvements
-- Study session duration selection
+- **[WIP]** Study session duration selection
 - MCM
 - Mod Versioning
 - Tome loss:
