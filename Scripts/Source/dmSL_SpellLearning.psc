@@ -13,8 +13,6 @@ Event OnInit()
 EndEvent
 
 Event OnSpellTomeRead(Book spellBook, Spell spellLearned, ObjectReference bookContainer)
-    Debug.Notification("[DM] Reading Spell Tome: (Book: " + spellBook.GetName() + ", Spell: " + spellLearned.GetName() + ", container: " + bookContainer.GetFormId() + ")")
-
     If (playerRef.HasSpell(spellLearned))
         PrintAlreadyKnowSpell(spellLearned)
         Return
