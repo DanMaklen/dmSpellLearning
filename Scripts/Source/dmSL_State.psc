@@ -24,14 +24,15 @@ float Function GetProgress(Spell spellLearned)
 EndFunction
 Function SetProgress(Spell spellLearned, float progress)
     JValue.solveFltSetter(GetSpellEntry(spellLearned), ".progress", progress, true)
+    Dump()
 EndFunction
 
 float Function Dump(string path = "Data/dmSL_StateDump.json")
     JValue.writeToFile(self.stateContainer, path)
 EndFunction
-
 Function InitState()
     self.stateContainer = JFormMap.object()
+    MiscUtil.PrintConsole("HelloWorld")
 EndFunction
 Function DeleteState()
     self.stateContainer = 0

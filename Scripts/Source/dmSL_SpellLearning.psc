@@ -26,7 +26,7 @@ Event OnSpellTomeRead(Book spellBook, Spell spellLearned, ObjectReference bookCo
 EndEvent
 
 ; Notification Messages
-Function PrintAlreadyKnowSpell(Spell spellLearned)e
+Function PrintAlreadyKnowSpell(Spell spellLearned)
     Debug.Notification("Known spell: " + spellLearned.GetName() + ".")
 EndFunction
 Function PrintLearnedNewSpell(Spell spellLearned)

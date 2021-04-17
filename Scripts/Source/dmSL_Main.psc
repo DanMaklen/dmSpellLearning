@@ -5,6 +5,7 @@ dmSL_State Property dmSL_StateRef Auto
 dmSL_SpellLearning Property dmSL_SpellLearningRef Auto
 
 Event OnInit()
+    Install()
 EndEvent
 
 Function Install()
