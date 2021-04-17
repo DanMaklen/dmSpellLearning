@@ -3,11 +3,9 @@ Scriptname dmSL_SpellLearning extends ReferenceAlias
 
 Sound Property UISpellLearnedSound Auto
 GlobalVariable Property dmSL_ConsumeBookOnLearn Auto
-
-Actor playerRef
+Actor Property playerRef Auto
 
 Event OnInit()
-    playerRef = Game.GetPlayer()
     DEST_ReferenceAliasExt.RegisterForSpellTomeReadEvent(self)
 EndEvent
 
