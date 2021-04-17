@@ -1,3 +1,6 @@
+# [DM] Spell Learning
+This is a Skyrim Mod. It's a personal take on how I invision learning new spells should have been.
+
 ## Features
 - Learn Spells Gradually
 - Learning rate scales with School Proficiency and Spell Complexity
