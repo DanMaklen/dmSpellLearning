@@ -1,22 +1,21 @@
 Scriptname dmSL_SpellLearning extends ReferenceAlias
 {Core Script that handles Spell Learning}
 
-; State
-dmSL_State Property dmSL_StateRef Auto
+; Script Instance Injection
+dmSL_State Property StateRef Auto
+dmSL_UX Property UXRef Auto
 
 ; Global Variables
 GlobalVariable Property dmSL_ConsumeBookOnLearn Auto
 GlobalVariable Property dmSL_BaseLearnRate Auto
 
 ; Auto Set Properties
-Sound Property UISpellLearnedSound Auto
 Actor Property PlayerRef Auto
-Message Property dmSL_StudySessionDurationPrompt Auto
 
 Event OnSpellTomeRead(Book spellBook, Spell spellLearned, ObjectReference bookContainer)
     If (PlayerRef.HasSpell(spellLearned))
-        PrintAlreadyKnowSpell(spellLearned)
-        dmSL_StateRef.SetProgress(spellLearned, 100.0) ; To detect spells learned before mod installation
+        UXRef.NotifyAlreadyKnowSpell(spellLearned)
+        StateRef.SetProgress(spellLearned, 100.0) ; To detect spells learned before mod installation
         Return
     EndIf
 
@@ -32,54 +31,34 @@ Event OnSpellTomeRead(Book spellBook, Spell spellLearned, ObjectReference bookCo
     EndIf
 EndEvent
 
-; UI
-Function PrintAlreadyKnowSpell(Spell spellLearned)
-    Debug.Notification("Known spell: " + spellLearned.GetName() + ".")
-EndFunction
-Function PrintLearnedNewSpell(Spell spellLearned)
-    Debug.Notification("Learned spell: " + spellLearned.GetName() + ".")
-EndFunction
-Function PrintProgress(Spell spellLearned, float progress, float progressDelta)
-    Debug.Notification("Learning spell: " + spellLearned.GetName() + ". Progress: " + progress as int + "% (+" + progressDelta as int + "%)")
-EndFunction
-float Function GetStudyDurationInput(float estimatedTimeToLearn)
-    int btnHit = dmSL_StudySessionDurationPrompt.Show(estimatedTimeToLearn)
-    If (btnHit == 0)
-        Return 0.0
-    EndIf
-    Return Math.pow(2, btnHit - 1)
-EndFunction
-
 ; Logic
 bool Function StudyFor(Spell spellLearned, float sessionDuration)
     float progressDelta = CalculateLearnRate(spellLearned) * sessionDuration
-    float progress = dmSL_StateRef.GetProgress(spellLearned)
+    float progress = StateRef.GetProgress(spellLearned)
     progress += progressDelta
-    dmSL_StateRef.SetProgress(spellLearned, progress)
+    StateRef.SetProgress(spellLearned, progress)
     If (progress >= 100.0)
         LearnSpell(spellLearned)
         Return true
     EndIf
-    PrintProgress(spellLearned, progress, progressDelta)
+    UXRef.NotifyProgress(spellLearned, progress, progressDelta)
     Return false
 EndFunction
 Function LearnSpell(Spell spellLearned)
     PlayerRef.AddSpell(spellLearned, false)
-    UISpellLearnedSound.Play(PlayerRef)
-    PrintLearnedNewSpell(spellLearned)
+    UXRef.NotifyLearnedNewSpell(spellLearned)
 EndFunction
 Function ConsumeSpellBook(Book spellBook, ObjectReference bookContainer = none)
     If !bookContainer
         bookContainer = PlayerRef
     EndIf
-
     bookContainer.RemoveItem(spellBook, 1, true)
 EndFunction
 float Function GetStudySessionDuration(Spell spellLearned)
     float learRate = CalculateLearnRate(spellLearned)
-    float progress = dmSL_StateRef.GetProgress(spellLearned)
+    float progress = StateRef.GetProgress(spellLearned)
     float estimatedTimeToLearn = (100 - progress) / learRate
-    return GetStudyDurationInput(estimatedTimeToLearn)
+    return UXRef.ShowStudyDurationInputPrompt(estimatedTimeToLearn)
 EndFunction
 
 ; Progress Calculation
