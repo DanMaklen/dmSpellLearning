@@ -11,6 +11,7 @@ GlobalVariable Property dmSL_BaseLearnRate Auto
 ; Auto Set Properties
 Sound Property UISpellLearnedSound Auto
 Actor Property PlayerRef Auto
+Message Property dmSL_StudySessionDurationPrompt Auto
 
 Event OnSpellTomeRead(Book spellBook, Spell spellLearned, ObjectReference bookContainer)
     If (PlayerRef.HasSpell(spellLearned))
@@ -19,14 +20,19 @@ Event OnSpellTomeRead(Book spellBook, Spell spellLearned, ObjectReference bookCo
         Return
     EndIf
 
-    bool isStudyCompleted = StudyFor(spellLearned, 1.0)
+    float sessionDuration = GetStudySessionDuration(spellLearned)
+    If (sessionDuration <= 0.0)
+        Return  ; Cancle
+    EndIf
+
+    bool isStudyCompleted = StudyFor(spellLearned, sessionDuration)
 
     If (isStudyCompleted && dmSL_ConsumeBookOnLearn.GetValue())
         ConsumeSpellBook(spellBook, bookContainer)
     EndIf
 EndEvent
 
-; Notification Messages
+; UI
 Function PrintAlreadyKnowSpell(Spell spellLearned)
     Debug.Notification("Known spell: " + spellLearned.GetName() + ".")
 EndFunction
@@ -35,6 +41,13 @@ Function PrintLearnedNewSpell(Spell spellLearned)
 EndFunction
 Function PrintProgress(Spell spellLearned, float progress, float progressDelta)
     Debug.Notification("Learning spell: " + spellLearned.GetName() + ". Progress: " + progress as int + "% (+" + progressDelta as int + "%)")
+EndFunction
+float Function GetStudyDurationInput(float estimatedTimeToLearn)
+    int btnHit = dmSL_StudySessionDurationPrompt.Show(estimatedTimeToLearn)
+    If (btnHit == 0)
+        Return 0.0
+    EndIf
+    Return Math.pow(2, btnHit - 1)
 EndFunction
 
 ; Logic
@@ -50,19 +63,23 @@ bool Function StudyFor(Spell spellLearned, float sessionDuration)
     PrintProgress(spellLearned, progress, progressDelta)
     Return false
 EndFunction
-
 Function LearnSpell(Spell spellLearned)
     PlayerRef.AddSpell(spellLearned, false)
     UISpellLearnedSound.Play(PlayerRef)
     PrintLearnedNewSpell(spellLearned)
 EndFunction
-
 Function ConsumeSpellBook(Book spellBook, ObjectReference bookContainer = none)
     If !bookContainer
         bookContainer = PlayerRef
     EndIf
 
     bookContainer.RemoveItem(spellBook, 1, true)
+EndFunction
+float Function GetStudySessionDuration(Spell spellLearned)
+    float learRate = CalculateLearnRate(spellLearned)
+    float progress = dmSL_StateRef.GetProgress(spellLearned)
+    float estimatedTimeToLearn = (100 - progress) / learRate
+    return GetStudyDurationInput(estimatedTimeToLearn)
 EndFunction
 
 ; Progress Calculation

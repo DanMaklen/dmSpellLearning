@@ -6,9 +6,10 @@ This is a Skyrim Mod. It's a personal take on how I invision learning new spells
 - Learning rate scales with School Proficiency and Spell Complexity
 - Auto detect learned spells on tome read
 - No compatbility patch required
+- Variable study session duration
 
 ## Ideas & Future Improvements
-- **[WIP]** Study session duration selection
+- **[WIP]** Study Duration Animation
 - MCM
 - Mod Versioning
 - Tome loss:
@@ -18,6 +19,7 @@ This is a Skyrim Mod. It's a personal take on how I invision learning new spells
 - Block learning when:
     - Swimming
     - In Combat
+    - IsTrespassing
     - Outdoors (configurable)
     - Recovery period between study sessions (configurable)
 - Focus Mechanic:
