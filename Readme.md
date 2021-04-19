@@ -22,6 +22,7 @@ This is a Skyrim Mod. It's a personal take on how I invision learning new spells
     - IsTrespassing
     - Outdoors (configurable)
     - Recovery period between study sessions (configurable)
+    - Must sleep between study sessions (configurable)
 - Focus Mechanic:
     - More focus while sitting
     - More focus when rested

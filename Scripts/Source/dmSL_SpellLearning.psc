@@ -26,6 +26,10 @@ Event OnSpellTomeRead(Book spellBook, Spell spellLearned, ObjectReference bookCo
 
     bool isStudyCompleted = StudyFor(spellLearned, sessionDuration)
 
+    If (isStudyCompleted)
+        LearnSpell(spellLearned)
+    EndIf
+
     If (isStudyCompleted && dmSL_ConsumeBookOnLearn.GetValue())
         ConsumeSpellBook(spellBook, bookContainer)
     EndIf
@@ -33,16 +37,17 @@ EndEvent
 
 ; Logic
 bool Function StudyFor(Spell spellLearned, float sessionDuration)
+    UXRef.StartStudyAnimation()
     float progressDelta = CalculateLearnRate(spellLearned) * sessionDuration
     float progress = StateRef.GetProgress(spellLearned)
     progress += progressDelta
-    StateRef.SetProgress(spellLearned, progress)
-    If (progress >= 100.0)
-        LearnSpell(spellLearned)
-        Return true
+    If (progress > 100.0)
+        progress = 100.0
     EndIf
+    StateRef.SetProgress(spellLearned, progress)
     UXRef.NotifyProgress(spellLearned, progress, progressDelta)
-    Return false
+    UXRef.EndStudyAnimation()    
+    Return progress >= 100.0
 EndFunction
 Function LearnSpell(Spell spellLearned)
     PlayerRef.AddSpell(spellLearned, false)
