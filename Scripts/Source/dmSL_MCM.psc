@@ -7,14 +7,14 @@ Event OnConfigInit()
 	ModName = "[DM] Spell Learning"
 	Pages = new string[2]
 	Pages[0] = "Config"
-	Pages[1] = "Progress Status"
+	Pages[1] = "Study Progress"
 EndEvent
 
 event OnPageReset(string page)
 	If (page == "Config")
 		SetupPage_Config()
-	ElseIf (page == "Progress Status")
-		SetupPage_ProgressStatus()
+	ElseIf (page == "Study Progress")
+		SetupPage_StudyProgress()
 	EndIf
 endevent
 
@@ -68,13 +68,16 @@ endevent
 	EndState
 
 ; Page 2: Progress Status
-	Function SetupPage_ProgressStatus()
-		AddHeaderOption("Filters")
+	Function SetupPage_StudyProgress()
+		AddHeaderOption("Study Progress")
 		AddHeaderOption("")
-		AddEmptyOption()
-		; AddTextOptionST("ApplyProgressFilter", "Apply Filter")
-		AddHeaderOption("Progress Report")
-		AddHeaderOption("")
+		Spell spellLearned = StateRef.FirstKey()
+		While (spellLearned)
+			float progress = StateRef.GetProgress(spellLearned)
+			string progressString = dmSL_Utils.FloatToString(progress) + "%"
+			AddTextOption(spellLearned.GetName(), progressString, OPTION_FLAG_DISABLED)
+			spellLearned = StateRef.NextKey(spellLearned)
+		EndWhile	
 	EndFunction
 
 ; Utilities

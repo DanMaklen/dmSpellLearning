@@ -11,7 +11,6 @@ Actor Property PlayerRef Auto
 Event OnSpellTomeRead(Book spellBook, Spell spellLearned, ObjectReference bookContainer)
     If (PlayerRef.HasSpell(spellLearned))
         UXRef.NotifyAlreadyKnowSpell(spellLearned)
-        StateRef.SetProgress(spellLearned, 100.0) ; To detect spells learned before mod installation
         Return
     EndIf
 
@@ -37,10 +36,7 @@ bool Function StudyFor(Spell spellLearned, float sessionDuration)
     float progressDelta = CalculateLearnRate(spellLearned) * sessionDuration
     float progress = StateRef.GetProgress(spellLearned)
     UXRef.AdvanceGameTime(sessionDuration)
-    progress += progressDelta
-    If (progress > 100.0)
-        progress = 100.0
-    EndIf
+    progress = PapyrusUtil.ClampFloat(progress + progressDelta, 0.0, 100.0)
     StateRef.SetProgress(spellLearned, progress)
     UXRef.NotifyProgress(spellLearned, progress, progressDelta)
     UXRef.EndStudyAnimation()    
@@ -48,6 +44,7 @@ bool Function StudyFor(Spell spellLearned, float sessionDuration)
 EndFunction
 Function LearnSpell(Spell spellLearned)
     PlayerRef.AddSpell(spellLearned, false)
+    StateRef.RemoveSpellEntry(spellLearned)
     UXRef.NotifyLearnedNewSpell(spellLearned)
 EndFunction
 Function ConsumeSpellBook(Book spellBook, ObjectReference bookContainer = none)

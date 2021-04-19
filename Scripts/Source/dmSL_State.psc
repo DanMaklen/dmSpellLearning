@@ -18,6 +18,11 @@ int Function GetSpellEntry(Spell spellLearned)
     JFormMap.getObj(self.stateContainer, spellLearned)
     Return JFormMap.getObj(self.stateContainer, spellLearned)
 EndFunction
+Function RemoveSpellEntry(Spell spellLearned)
+    If(JFormMap.hasKey(self.stateContainer, spellLearned))
+        JFormMap.removeKey(self.stateContainer, spellLearned)
+    EndIf
+EndFunction
 
 float Function GetProgress(Spell spellLearned)
     Return JValue.solveFlt(GetSpellEntry(spellLearned), ".progress", 0.0)
@@ -27,12 +32,19 @@ Function SetProgress(Spell spellLearned, float progress)
     Dump()
 EndFunction
 
+; Iterators
+Spell Function FirstKey()
+    return JFormMap.nextKey(self.stateContainer) as Spell
+EndFunction
+Spell Function NextKey(Spell previousKey)
+    return JFormMap.nextKey(self.stateContainer, previousKey) as Spell
+EndFunction
+
 float Function Dump(string path = "Data/dmSL_StateDump.json")
     JValue.writeToFile(self.stateContainer, path)
 EndFunction
 Function InitState()
     self.stateContainer = JFormMap.object()
-    MiscUtil.PrintConsole("HelloWorld")
 EndFunction
 Function DeleteState()
     self.stateContainer = 0
