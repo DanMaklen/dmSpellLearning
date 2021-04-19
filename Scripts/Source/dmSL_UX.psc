@@ -17,19 +17,19 @@ Idle Property IdleBookSitting_TurnManyPages auto
 Sound Property UISpellLearnedSound Auto
 Message Property dmSL_StudySessionDurationPrompt Auto
 
+; Message Notifications
 Function NotifyAlreadyKnowSpell(Spell spellLearned)
     Debug.Notification("Known spell: " + spellLearned.GetName() + ".")
 EndFunction
-
 Function NotifyLearnedNewSpell(Spell spellLearned)
     Debug.Notification("Learned spell: " + spellLearned.GetName() + ".")
     UISpellLearnedSound.Play(PlayerRef)
 EndFunction
-
 Function NotifyProgress(Spell spellLearned, float progress, float progressDelta)
     Debug.Notification("Learning spell: " + spellLearned.GetName() + ". Progress: " + progress as int + "% (+" + progressDelta as int + "%)")
 EndFunction
 
+; User Input
 float Function ShowStudyDurationInputPrompt(float estimatedTimeToLearn)
     int btnHit = dmSL_StudySessionDurationPrompt.Show(estimatedTimeToLearn)
     If (btnHit == 0)
@@ -38,6 +38,7 @@ float Function ShowStudyDurationInputPrompt(float estimatedTimeToLearn)
     Return Math.pow(2, btnHit - 1)
 EndFunction
 
+; Animations
 Function StartStudyAnimation()
     Game.DisablePlayerControls()
 
@@ -63,7 +64,6 @@ Function StartStudyAnimation()
     FadeToBlackHoldImod.Apply()
     Utility.Wait(1)
 EndFunction
-
 Function EndStudyAnimation()
     Utility.Wait(1)
     FadeToBlackBackImod.Apply()
