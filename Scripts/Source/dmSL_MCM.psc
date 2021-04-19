@@ -7,22 +7,19 @@ Event OnConfigInit()
 	ModName = "[DM] Spell Learning"
 	Pages = new string[2]
 	Pages[0] = "Config"
-	Pages[1] = "Progress State"
+	Pages[1] = "Progress Status"
 EndEvent
 
 event OnPageReset(string page)
 	If (page == "Config")
-		SetupPageConfig()
-	ElseIf (page == "Progress State")
-		AddHeaderOption("Filters")
-		AddHeaderOption("")
-		SetCursorFillMode(TOP_TO_BOTTOM)
-
+		SetupPage_Config()
+	ElseIf (page == "Progress Status")
+		SetupPage_ProgressStatus()
 	EndIf
 endevent
 
 ; Page 1: Config
-	Function SetupPageConfig()
+	Function SetupPage_Config()
 		SetCursorFillMode(TOP_TO_BOTTOM)
 		AddHeaderOption("Basic Configuration")
 		AddToggleOptionST("ConsumeTomeOnLearn", "Consume Spell Tome on Learn", dmSL_Config.GetConsumeTomeOnLearn())
@@ -69,6 +66,16 @@ endevent
 			SetSliderOptionValueST(dmSL_Config.GetDefaultBaseLearnRate(), "{2}")
 		EndEvent
 	EndState
+
+; Page 2: Progress Status
+	Function SetupPage_ProgressStatus()
+		AddHeaderOption("Filters")
+		AddHeaderOption("")
+		AddEmptyOption()
+		; AddTextOptionST("ApplyProgressFilter", "Apply Filter")
+		AddHeaderOption("Progress Report")
+		AddHeaderOption("")
+	EndFunction
 
 ; Utilities
 	string Function BuildDefaultValueInfoTextString(string val)
