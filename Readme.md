@@ -41,3 +41,4 @@ This is a Skyrim Mod. It's a personal take on how I invision learning new spells
     - More focus during morning/night time (Configurable)
 - Race Based Buff
 - Perk Based Buff
+- College of Winterhold Quest based Buffs

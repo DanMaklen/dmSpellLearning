@@ -1,32 +1,93 @@
 scriptname dmSL_MCM extends SKI_ConfigBase
 
-; Toggle states
-bool aVal = false
-bool bVal = false
-bool cVal = false
-bool dVal = false
+; Script Instance Injection
+dmSL_State Property StateRef Auto
+
+Event OnConfigInit()
+	ModName = "[DM] Spell Learning"
+	Pages = new string[2]
+	Pages[0] = "Config"
+	Pages[1] = "Progress Status"
+EndEvent
 
 event OnPageReset(string page)
-	SetCursorFillMode(TOP_TO_BOTTOM)
-	SetCursorPosition(0) ; Can be removed because it starts at 0 anyway
-	AddHeaderOption("Group 5")
-	AddToggleOption("A", aVal)
-	
-	AddEmptyOption()
-	
-	AddHeaderOption("Group 2")
-	AddToggleOption("B", bVal)
-	AddToggleOption("C", cVal)
-	
-	SetCursorPosition(1) ; Move cursor to top right position
-	
-	AddHeaderOption("Group 3")
-	AddToggleOption("D", dVal)
+	If (page == "Config")
+		SetupPage_Config()
+	ElseIf (page == "Progress Status")
+		SetupPage_ProgressStatus()
+	EndIf
 endevent
 
-event OnOpetionSelect()
-endevent
+; Page 1: Config
+	Function SetupPage_Config()
+		SetCursorFillMode(TOP_TO_BOTTOM)
+		AddHeaderOption("Basic Configuration")
+		AddToggleOptionST("ConsumeTomeOnLearn", "Consume Spell Tome on Learn", dmSL_Config.GetConsumeTomeOnLearn())
+		AddSliderOptionST("BaseLearnRate", "Base Learning Rate", dmSL_Config.GetBaseLearnRate(), "{2}")
+	EndFunction
 
-state ABC
+	State ConsumeTomeOnLearn
+		Event OnSelectST()
+			bool newValue = !dmSL_Config.GetConsumeTomeOnLearn()
+			dmSL_Config.SetConsumeTomeOnLearn(newValue)
+			SetToggleOptionValueST(newValue)
+		EndEvent
+		Event OnHighlightST()
+			string info = \
+				"Enabled: Spell Tome WILL be consumed when the spell is learned succesfully.\n" + \
+				"Disabled: Spell Tome WILL NOT be consumed when the spell is learned sucessfully.\n" + \
+				BuildDefaultValueInfoTextBool(dmSL_Config.GetDefaultConsumeTomeOnLearn())
+			SetInfoText(info)
+		EndEvent
+		Event OnDefaultST()
+			SetToggleOptionValueST(dmSL_Config.GetDefaultConsumeTomeOnLearn())
+		EndEvent
+	EndState
 
-endstate
+	State BaseLearnRate
+		Event OnSliderOpenST()
+			SetSliderDialogStartValue(dmSL_Config.GetBaseLearnRate())
+			SetSliderDialogDefaultValue(dmSL_Config.GetDefaultBaseLearnRate())
+			SetSliderDialogRange(1.00, 100.00)
+			SetSliderDialogInterval(1.0)
+		EndEvent
+		Event OnSliderAcceptST(float val)
+			dmSL_Config.SetBaseLearnRate(val)
+			SetSliderOptionValueST(val, "{2}")
+		EndEvent
+		Event OnHighlightST()
+			string info = \
+				"The base progress done per hour to learn a new spell before any modifiers are applied.\n" + \
+				"The higher amount the faster spell is learned.\n" + \
+				BuildDefaultValueInfoTextFloat(dmSL_Config.GetDefaultBaseLearnRate())
+			SetInfoText(info)
+		EndEvent
+		Event OnDefaultST()
+			SetSliderOptionValueST(dmSL_Config.GetDefaultBaseLearnRate(), "{2}")
+		EndEvent
+	EndState
+
+; Page 2: Progress Status
+	Function SetupPage_ProgressStatus()
+		AddHeaderOption("Filters")
+		AddHeaderOption("")
+		AddEmptyOption()
+		; AddTextOptionST("ApplyProgressFilter", "Apply Filter")
+		AddHeaderOption("Progress Report")
+		AddHeaderOption("")
+	EndFunction
+
+; Utilities
+	string Function BuildDefaultValueInfoTextString(string val)
+		return "(Default: " + val + ")"
+	EndFunction
+	string Function BuildDefaultValueInfoTextFloat(float val)
+		return BuildDefaultValueInfoTextString(dmSL_Utils.FloatToString(val))
+	EndFunction
+	string Function BuildDefaultValueInfoTextBool(bool val)
+		If (val)
+			return BuildDefaultValueInfoTextString("Enabled")
+		Else
+			return BuildDefaultValueInfoTextString("Disabled")
+		EndIf
+	EndFunction
