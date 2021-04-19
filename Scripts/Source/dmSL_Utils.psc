@@ -8,6 +8,10 @@ string Function FloatToString(float val, int precision = 2) global
     Return (fixedDecimalValue / decimalUnit) + "." + AppendFillCharacter(fixedDecimalValue % decimalUnit, "0", precision)
 EndFunction
 
+string Function FloatToPercentage(float val, int precision = 2) global
+    return FloatToString(val * 100, precision) + "%"
+EndFunction
+
 string Function AppendFillCharacter(string str, string char, int width) global
     int count = width - StringUtil.GetLength(str)
     While (count > 0)

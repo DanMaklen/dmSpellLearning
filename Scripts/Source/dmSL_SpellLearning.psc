@@ -26,7 +26,7 @@ Event OnSpellTomeRead(Book spellBook, Spell spellLearned, ObjectReference bookCo
     EndIf
 
     If (isStudyCompleted && dmSL_Config.GetConsumeTomeOnLearn())
-        ConsumeSpellBook(spellBook, bookContainer)
+        ConsumeSpellTome(spellBook, bookContainer)
     EndIf
 EndEvent
 
@@ -36,18 +36,18 @@ bool Function StudyFor(Spell spellLearned, float sessionDuration)
     float progressDelta = CalculateLearnRate(spellLearned) * sessionDuration
     float progress = StateRef.GetProgress(spellLearned)
     UXRef.AdvanceGameTime(sessionDuration)
-    progress = PapyrusUtil.ClampFloat(progress + progressDelta, 0.0, 100.0)
+    progress = PapyrusUtil.ClampFloat(progress + progressDelta, 0.0, 1.0)
     StateRef.SetProgress(spellLearned, progress)
     UXRef.NotifyProgress(spellLearned, progress, progressDelta)
     UXRef.EndStudyAnimation()    
-    Return progress >= 100.0
+    Return progress >= 1.0
 EndFunction
 Function LearnSpell(Spell spellLearned)
     PlayerRef.AddSpell(spellLearned, false)
     StateRef.RemoveSpellEntry(spellLearned)
     UXRef.NotifyLearnedNewSpell(spellLearned)
 EndFunction
-Function ConsumeSpellBook(Book spellBook, ObjectReference bookContainer = none)
+Function ConsumeSpellTome(Book spellBook, ObjectReference bookContainer = none)
     If !bookContainer
         bookContainer = PlayerRef
     EndIf
@@ -58,7 +58,7 @@ EndFunction
 float Function GetStudySessionDuration(Spell spellLearned)
     float learRate = CalculateLearnRate(spellLearned)
     float progress = StateRef.GetProgress(spellLearned)
-    float estimatedTimeToLearn = (100 - progress) / learRate
+    float estimatedTimeToLearn = (1.0 - progress) / learRate
     return UXRef.ShowStudyDurationInputPrompt(estimatedTimeToLearn)
 EndFunction
 float Function CalculateLearnRate(Spell spellLearned)
