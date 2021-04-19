@@ -48,8 +48,8 @@ endevent
 		Event OnSliderOpenST()
 			SetSliderDialogStartValue(dmSL_Config.GetBaseLearnRate())
 			SetSliderDialogDefaultValue(dmSL_Config.GetDefaultBaseLearnRate())
-			SetSliderDialogRange(1.00, 100.00)
-			SetSliderDialogInterval(1.0)
+			SetSliderDialogRange(0.01, 1.0)
+			SetSliderDialogInterval(0.01)
 		EndEvent
 		Event OnSliderAcceptST(float val)
 			dmSL_Config.SetBaseLearnRate(val)
@@ -57,7 +57,7 @@ endevent
 		EndEvent
 		Event OnHighlightST()
 			string info = \
-				"The base progress done per hour to learn a new spell before any modifiers are applied.\n" + \
+				"Controls the base progress done per hour to learn a new spell before any modifiers are applied.\n" + \
 				"The higher amount the faster spell is learned.\n" + \
 				BuildDefaultValueInfoTextFloat(dmSL_Config.GetDefaultBaseLearnRate())
 			SetInfoText(info)
@@ -74,7 +74,7 @@ endevent
 		Spell spellLearned = StateRef.FirstKey()
 		While (spellLearned)
 			float progress = StateRef.GetProgress(spellLearned)
-			string progressString = dmSL_Utils.FloatToString(progress) + "%"
+			string progressString = dmSL_Utils.FloatToPercentage(progress)
 			AddTextOption(spellLearned.GetName(), progressString, OPTION_FLAG_DISABLED)
 			spellLearned = StateRef.NextKey(spellLearned)
 		EndWhile	
@@ -85,6 +85,9 @@ endevent
 		return "(Default: " + val + ")"
 	EndFunction
 	string Function BuildDefaultValueInfoTextFloat(float val)
+		return BuildDefaultValueInfoTextString(dmSL_Utils.FloatToString(val))
+	EndFunction
+	string Function BuildDefaultValueInfoTextFloatPercentage(float val)
 		return BuildDefaultValueInfoTextString(dmSL_Utils.FloatToString(val))
 	EndFunction
 	string Function BuildDefaultValueInfoTextBool(bool val)

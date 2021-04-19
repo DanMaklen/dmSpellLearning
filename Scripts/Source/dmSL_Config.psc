@@ -3,7 +3,7 @@ Scriptname dmSL_Config
 
 ; Base Learn Rate
 float Function GetDefaultBaseLearnRate() global
-    return 10.0
+    return 0.10
 EndFunction
 float Function GetBaseLearnRate() global
     return GetFloatValue(".Config.BaseLearnRate", GetDefaultBaseLearnRate())
