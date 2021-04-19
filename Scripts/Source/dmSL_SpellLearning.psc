@@ -40,6 +40,7 @@ bool Function StudyFor(Spell spellLearned, float sessionDuration)
     UXRef.StartStudyAnimation()
     float progressDelta = CalculateLearnRate(spellLearned) * sessionDuration
     float progress = StateRef.GetProgress(spellLearned)
+    UXRef.AdvanceGameTime(sessionDuration)
     progress += progressDelta
     If (progress > 100.0)
         progress = 100.0
@@ -59,14 +60,14 @@ Function ConsumeSpellBook(Book spellBook, ObjectReference bookContainer = none)
     EndIf
     bookContainer.RemoveItem(spellBook, 1, true)
 EndFunction
+
+; Calculations
 float Function GetStudySessionDuration(Spell spellLearned)
     float learRate = CalculateLearnRate(spellLearned)
     float progress = StateRef.GetProgress(spellLearned)
     float estimatedTimeToLearn = (100 - progress) / learRate
     return UXRef.ShowStudyDurationInputPrompt(estimatedTimeToLearn)
 EndFunction
-
-; Progress Calculation
 float Function CalculateLearnRate(Spell spellLearned)
     Return dmSL_BaseLearnRate.GetValue() * (1 + CalculateProficiencyModifier(spellLearned))
 EndFunction

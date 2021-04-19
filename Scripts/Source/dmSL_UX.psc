@@ -2,6 +2,7 @@ Scriptname dmSL_UX extends ReferenceAlias
 {Handles and UX elements like messages, prompt & animations}
 
 Actor Property PlayerRef Auto
+GlobalVariable Property GameHour auto
 
 ; UI Elements
 ImageSpaceModifier Property FadeToBlackBackImod auto
@@ -71,4 +72,9 @@ Function EndStudyAnimation()
     Utility.Wait(2)
     PlayerRef.PlayIdle(IdleStop_Loose)
     Game.EnablePlayerControls()
+EndFunction
+
+; Misc
+Function AdvanceGameTime(float duration)
+    GameHour.Mod(duration)
 EndFunction
