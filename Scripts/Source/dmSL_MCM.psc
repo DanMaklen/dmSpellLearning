@@ -87,9 +87,6 @@ endevent
 	string Function BuildDefaultValueInfoTextFloat(float val)
 		return BuildDefaultValueInfoTextString(dmSL_Utils.FloatToString(val))
 	EndFunction
-	string Function BuildDefaultValueInfoTextFloatPercentage(float val)
-		return BuildDefaultValueInfoTextString(dmSL_Utils.FloatToString(val))
-	EndFunction
 	string Function BuildDefaultValueInfoTextBool(bool val)
 		If (val)
 			return BuildDefaultValueInfoTextString("Enabled")
