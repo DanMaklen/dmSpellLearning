@@ -27,7 +27,7 @@ Function NotifyLearnedNewSpell(Spell spellLearned)
     UISpellLearnedSound.Play(PlayerRef)
 EndFunction
 Function NotifyProgress(Spell spellLearned, float progress, float progressDelta)
-    Debug.Notification("Learning spell: " + spellLearned.GetName() + ". Progress: " + progress as int + "% (+" + progressDelta as int + "%)")
+    Debug.Notification("Learning spell: " + spellLearned.GetName() + ". Progress: " + dmSL_Utils.FloatToString(progress) + "% (+" + dmSL_Utils.FloatToString(progressDelta) + "%)")
 EndFunction
 
 ; User Input
