@@ -5,10 +5,6 @@ Scriptname dmSL_SpellLearning extends ReferenceAlias
 dmSL_State Property StateRef Auto
 dmSL_UX Property UXRef Auto
 
-; Global Variables
-GlobalVariable Property dmSL_ConsumeBookOnLearn Auto
-GlobalVariable Property dmSL_BaseLearnRate Auto
-
 ; Auto Set Properties
 Actor Property PlayerRef Auto
 
@@ -30,7 +26,7 @@ Event OnSpellTomeRead(Book spellBook, Spell spellLearned, ObjectReference bookCo
         LearnSpell(spellLearned)
     EndIf
 
-    If (isStudyCompleted && dmSL_ConsumeBookOnLearn.GetValue())
+    If (isStudyCompleted && dmSL_Config.GetConsumeTomeOnLearn())
         ConsumeSpellBook(spellBook, bookContainer)
     EndIf
 EndEvent
@@ -69,7 +65,7 @@ float Function GetStudySessionDuration(Spell spellLearned)
     return UXRef.ShowStudyDurationInputPrompt(estimatedTimeToLearn)
 EndFunction
 float Function CalculateLearnRate(Spell spellLearned)
-    Return dmSL_BaseLearnRate.GetValue() * (1 + CalculateProficiencyModifier(spellLearned))
+    Return dmSL_Config.GetBaseLearnRate() * (1 + CalculateProficiencyModifier(spellLearned))
 EndFunction
 float Function CalculateProficiencyModifier(Spell spellLearned)
     float proficiencyMod = 0.0
