@@ -84,7 +84,8 @@ EndEvent
 
 ; Page 2: Progress Status
 	Function SetupPage_StudyProgress()
-		AddHeaderOption("Progress Report")
+		int count = StateRef.KeyCount()
+		AddHeaderOption("Progress Report (" + count + ")")
 		AddHeaderOption("")
 		Spell spellLearned = StateRef.FirstKey()
 		While (spellLearned)
