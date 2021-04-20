@@ -1,4 +1,4 @@
-Scriptname dmSL_Config
+Scriptname dmSL_Config Hidden
 {Central unit to handle all config}
 
 ; Base Learn Rate

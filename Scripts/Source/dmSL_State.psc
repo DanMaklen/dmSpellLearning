@@ -39,6 +39,9 @@ EndFunction
 Spell Function NextKey(Spell previousKey)
     return JFormMap.nextKey(self.stateContainer, previousKey) as Spell
 EndFunction
+int Function KeyCount()
+    return JFormMap.count(self.stateContainer)
+EndFunction
 
 float Function Dump(string path = "Data/dmSL_StateDump.json")
     JValue.writeToFile(self.stateContainer, path)

@@ -1,4 +1,4 @@
-Scriptname dmSL_Utils
+Scriptname dmSL_Utils Hidden
 {Some utility functions used through out the code}
 
 ; Transforms float to string with with certain precision
@@ -19,4 +19,11 @@ string Function AppendFillCharacter(string str, string char, int width) global
         count -= 1
     EndWhile
     return str
+EndFunction
+
+int Function MinInt(int a, int b) global
+    If (a < b)
+        return a
+    EndIf
+    return b
 EndFunction
