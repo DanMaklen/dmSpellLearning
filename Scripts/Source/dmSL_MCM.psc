@@ -14,9 +14,11 @@ Event OnConfigInit()
 	Pages[2] = Page_SpellChecklist
 EndEvent
 
+Event OnConfigOpen()
+	InitPage_SpellChecklist()
+EndEvent
 Event OnConfigClose()
-	curs = 0
-	list = none ; To clean up memory
+	CleanUpPage_SpellChecklist()
 EndEvent
 
 Event OnPageReset(string page)
@@ -94,21 +96,49 @@ EndEvent
 	EndFunction
 
 ; Page 3: Spell Checklist
-	Spell[] list
+	; Filter Options
+	string[] schoolFilterOptions
+	string[] knownSpellsFilterOptions
+
+	Form[] list
+	; Pagination
 	int curs = 0
 	int pageSize = 20
-	int Function GetCurrentPage()
-		return curs / pageSize + 1
-	EndFunction
-	int Function GetTotalPages()
-		return (list.Length + pageSize - 1) / pageSize
-	EndFunction
+	; Filters
+	int schoolFilterIndex
+	int knownSpellsFilterIndex
 
+	Function InitPage_SpellChecklist()
+		schoolFilterOptions = new string[7]
+			schoolFilterOptions[0] = "Any"
+			schoolFilterOptions[1] = "Alteration"
+			schoolFilterOptions[2] = "Conjuration"
+			schoolFilterOptions[3] = "Destruction"
+			schoolFilterOptions[4] = "Enchanting"
+			schoolFilterOptions[5] = "Illusion"
+			schoolFilterOptions[6] = "Restoration"
+		knownSpellsFilterOptions = new string[3]
+			knownSpellsFilterOptions[0] = "Any"
+			knownSpellsFilterOptions[1] = "Known Spells Only"
+			knownSpellsFilterOptions[2] = "Unknown Spells Only"
+	EndFunction
+	Function CleanUpPage_SpellChecklist()
+		; Clean up memory
+		list = none
+		schoolFilterOptions = none
+		knownSpellsFilterOptions = none
+		curs = 0
+	EndFunction
 	Function SetupPage_SpellChecklist()
 		SetTitleText(Page_SpellChecklist)
-		AddHeaderOption("Checklist Filters")
-		AddTextOptionST("ApplyFilter", "", "Apply Filter")
+		AddHeaderOption("Checklist")
+		AddKnowSpellsCount()
 		
+		AddMenuOptionST("SchoolFilterSelect", "By School", schoolFilterOptions[schoolFilterIndex])
+		AddMenuOptionST("KnownSpellsFilterSelect", "By Known Spells", knownSpellsFilterOptions[knownSpellsFilterIndex])
+		AddEmptyOption()
+		AddTextOptionST("ApplyFilter", "", "Apply Filter")
+
 		AddHeaderOption("Navigation")
 		AddHeaderOption("")
 		AddSliderOptionST("PageSize", "Page Size", pageSize, "{0} items")
@@ -162,6 +192,42 @@ EndEvent
 			OnSliderAcceptST(1)
 		EndEvent
 	EndState
+	State SchoolFilterSelect
+		Event OnMenuOpenST()
+			SetMenuDialogStartIndex(schoolFilterIndex)
+			SetMenuDialogDefaultIndex(0)
+			SetMenuDialogOptions(schoolFilterOptions)
+		EndEvent
+		Event OnMenuAcceptST(int index)
+			schoolFilterIndex = index
+			SetMenuOptionValueST(schoolFilterOptions[index])
+		EndEvent
+		Event OnHighlightST()
+			SetInfoText("Filter by spell's school.\n" + \
+				"Note: If a spell have multiple magic effects and only of them match the spell will be included in the list." + \
+				BuildDefaultValueInfoTextString(schoolFilterOptions[0]))
+		EndEvent
+		Event OnDefaultST()
+			OnSliderAcceptST(0)
+		EndEvent
+	EndState
+	State KnownSpellsFilterSelect
+		Event OnMenuOpenST()
+			SetMenuDialogStartIndex(knownSpellsFilterIndex)
+			SetMenuDialogDefaultIndex(0)
+			SetMenuDialogOptions(knownSpellsFilterOptions)
+		EndEvent
+		Event OnMenuAcceptST(int index)
+			knownSpellsFilterIndex = index
+			SetMenuOptionValueST(knownSpellsFilterOptions[index])
+		EndEvent
+		Event OnHighlightST()
+			SetInfoText("Filter by known spells.\n" + BuildDefaultValueInfoTextString(knownSpellsFilterOptions[0]))
+		EndEvent
+		Event OnDefaultST()
+			OnSliderAcceptST(0)
+		EndEvent
+	EndState
 
 	Function SetPaginationCurs(int newCurs, int newPageSize)
 		; Validation
@@ -185,13 +251,66 @@ EndEvent
 	Function AddChecklist()
 		int i = 0
 		While (i < pageSize && curs + i < list.Length)
-			Spell item = list[curs + i]
+			Spell item = list[curs + i] as Spell
 			AddToggleOption(item.GetName(), Game.GetPlayer().HasSpell(item))
 			i += 1
 		EndWhile
 	EndFunction
+	Function AddKnowSpellsCount()
+		int knownCount = 0
+		int i = 0
+		While (i < list.Length)
+			If (Game.GetPlayer().HasSpell(list[i]))
+				knownCount += 1
+			EndIf
+			i += 1
+		EndWhile
+		AddTextOption("Known Spells", knownCount + "/" + list.Length + " (" + dmSL_Utils.FloatToPercentage(knownCount as float / list.length as float) + ")", OPTION_FLAG_DISABLED)
+	EndFunction
+
 	Function UpdateFormList()
-		list = PO3_SKSEFunctions.GetAllSpells(abIsPlayable = true)
+		SetTitleText("Filtering spells...")
+		Spell[] spellList = PO3_SKSEFunctions.GetAllSpells(abIsPlayable = true)
+		int jArr = JArray.Object()
+		int i = 0
+		While (i < spellList.Length)
+			Spell item = spellList[i]
+			If (IsPassFilter(item))
+				JArray.addForm(jArr, item)
+			EndIf
+			i += 1
+		EndWhile
+		list = JArray.asFormArray(jarr)
+	EndFunction
+	bool Function IsPassFilter(Spell item)
+		If (knownSpellsFilterIndex == 1 && !Game.GetPlayer().HasSpell(item))	; By Known Spells
+			return false
+		EndIf
+		If (knownSpellsFilterIndex == 2 && Game.GetPlayer().HasSpell(item))		; By Unknown Spells
+			return false
+		EndIf
+		If (schoolFilterIndex != 0 && !SpellHasSchoolEffect(item, schoolFilterOptions[schoolFilterIndex]))
+			return false
+		EndIf
+		return true
+	EndFunction
+	bool Function SpellHasSchoolEffect(Spell item, string school)
+		MagicEffect[] effectList = item.GetMagicEffects()
+		int i = 0
+		While (i < effectList.Length)
+			MagicEffect effect = effectList[i]
+			If (effect.GetAssociatedSkill() == school)
+				return true
+			EndIf
+			i += 1
+		EndWhile
+		return false
+	EndFunction
+	int Function GetCurrentPage()
+		return curs / pageSize + 1
+	EndFunction
+	int Function GetTotalPages()
+		return (list.Length + pageSize - 1) / pageSize
 	EndFunction
 
 ; Utilities
