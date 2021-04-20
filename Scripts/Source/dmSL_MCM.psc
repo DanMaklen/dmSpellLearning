@@ -191,7 +191,6 @@ EndEvent
 		EndWhile
 	EndFunction
 	Function UpdateFormList()
-		string progressBarTitle = "Apply Filter"
 		list = PO3_SKSEFunctions.GetAllSpells(abIsPlayable = true)
 	EndFunction
 
