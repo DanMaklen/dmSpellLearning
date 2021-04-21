@@ -94,7 +94,6 @@ State Studying
     EndEvent
 EndState
 
-
 State LearnSpell
     Event OnBeginState()
         Spell spellLearned = StateRef.StudySession_GetSpellLearned()
