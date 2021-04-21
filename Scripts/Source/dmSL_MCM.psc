@@ -327,5 +327,4 @@ EndEvent
 		Else
 			SetInfoTextWithDefaultString(info, "Disabled")
 		EndIf
-		SetInfoText(info + "\n(Default: " + defaultVal + ")")
 	EndFunction
