@@ -8,84 +8,107 @@ dmSL_UX Property UXRef Auto
 ; Auto Set Properties
 Actor Property PlayerRef Auto
 
-Event OnSpellTomeRead(Book spellBook, Spell spellLearned, ObjectReference bookContainer)
-    If (PlayerRef.HasSpell(spellLearned))
-        UXRef.NotifyAlreadyKnowSpell(spellLearned)
-        return
-    EndIf
+Auto State Idle
+    Event OnBeginState()
+        StateRef.StudySession_SetState(StateRef.StudySessionState_Idle)
+        StateRef.StudySession_SetDuration(0.0)
+        StateRef.StudySession_SetSpellLearned(none)
+        StateRef.StudySession_SetSpellTome(none)
+        StateRef.StudySession_SetSpellTomeContainer(none)
+    EndEvent
+    Event OnSpellTomeRead(Book spellTome, Spell spellLearned, ObjectReference spellTomeContainer)
+        If (PlayerRef.HasSpell(spellLearned))
+            UXRef.NotifyStudyConditionNotMet(spellLearned, UXRef.ConditionNotMetReason_SpellKnown)
+            return
+        EndIf
+        If (PlayerRef.IsSwimming())
+            UXRef.NotifyStudyConditionNotMet(spellLearned, UXRef.ConditionNotMetReason_Swimming)
+            return
+        EndIf
+        If (PlayerRef.IsInCombat())
+            UXRef.NotifyStudyConditionNotMet(spellLearned, UXRef.ConditionNotMetReason_InCombat)
+            return
+        EndIf
+        If (!dmSL_Config.GetStudyConditionsAllowTresspassing() && PlayerRef.IsTrespassing())
+            UXRef.NotifyStudyConditionNotMet(spellLearned, UXRef.ConditionNotMetReason_Tresspassing)
+            return
+        EndIf
+        If (!dmSL_Config.GetStudyConditionsAllowOutdoor() && !PlayerRef.IsInInterior())
+            UXRef.NotifyStudyConditionNotMet(spellLearned, UXRef.ConditionNotMetReason_Outdoor)
+            return
+        EndIf
+        If (!dmSL_Config.GetStudyConditionsAllowSneaking() && PlayerRef.IsSneaking())
+            UXRef.NotifyStudyConditionNotMet(spellLearned, UXRef.ConditionNotMetReason_Sneaking)
+            return
+        EndIf
+        
+        float sessionDuration = GetStudySessionDuration(spellLearned)
+        If (sessionDuration <= 0.0)
+            return  ; Cancle
+        EndIf
 
-    If (!ValidateStudyCondition())
-        return  ; Cancle
-    EndIf
+        If (!spellTomeContainer)
+            spellTomeContainer = PlayerRef
+        EndIf
 
-    float sessionDuration = GetStudySessionDuration(spellLearned)
-    If (sessionDuration <= 0.0)
-        return  ; Cancle
-    EndIf
+        StateRef.StudySession_SetSpellLearned(spellLearned)
+        StateRef.StudySession_SetSpellTomeContainer(spellTomeContainer)
+        StateRef.StudySession_SetSpellTome(spellTome)
+        StateRef.StudySession_SetDuration(sessionDuration)
+        GoToState("Studying")
+    EndEvent
+EndState
 
-    bool isStudyCompleted = StudyFor(spellLearned, sessionDuration)
+State Studying
+    Event OnBeginState()
+        StateRef.StudySession_SetState(StateRef.StudySessionState_Idle)
+        UXRef.StartStudyAnimation()
 
-    If (isStudyCompleted)
-        LearnSpell(spellLearned)
-    EndIf
+        Spell spellLearned = StateRef.StudySession_GetSpellLearned()
+        float sessionDuration = StateRef.StudySession_GetDuration()
 
-    If (isStudyCompleted && dmSL_Config.GetConsumeTomeOnLearn())
-        ConsumeSpellTome(spellBook, bookContainer)
-    EndIf
-EndEvent
+        float progressDelta = CalculateLearnRate(spellLearned) * sessionDuration
+        float progress = StateRef.ProgressState_GetProgress(spellLearned)
+        progress = PapyrusUtil.ClampFloat(progress + progressDelta, 0.0, 1.0)
+        StateRef.ProgressState_SetProgress(spellLearned, progress)
+        
+        UXRef.NotifyProgress(spellLearned, progress, progressDelta)
+        UXRef.AdvanceGameTime(sessionDuration)
 
-; Logic
-bool Function StudyFor(Spell spellLearned, float sessionDuration)
-    UXRef.StartStudyAnimation()
-    float progressDelta = CalculateLearnRate(spellLearned) * sessionDuration
-    float progress = StateRef.GetProgress(spellLearned)
-    UXRef.AdvanceGameTime(sessionDuration)
-    progress = PapyrusUtil.ClampFloat(progress + progressDelta, 0.0, 1.0)
-    StateRef.SetProgress(spellLearned, progress)
-    UXRef.NotifyProgress(spellLearned, progress, progressDelta)
-    UXRef.EndStudyAnimation()    
-    return progress >= 1.0
-EndFunction
-Function LearnSpell(Spell spellLearned)
-    PlayerRef.AddSpell(spellLearned, false)
-    StateRef.RemoveSpellEntry(spellLearned)
-    UXRef.NotifyLearnedNewSpell(spellLearned)
-EndFunction
-Function ConsumeSpellTome(Book spellBook, ObjectReference bookContainer = none)
-    If !bookContainer
-        bookContainer = PlayerRef
-    EndIf
-    bookContainer.RemoveItem(spellBook, 1, true)
-EndFunction
+        If (progress >= 1.0)
+            GoToState("LearnSpell")
+        Else
+            GoToState("Idle")
+        EndIf
+    EndEvent
+    Event OnEndState()
+        UXRef.EndStudyAnimation()
+    EndEvent
+EndState
 
-bool Function ValidateStudyCondition()
-    If (PlayerRef.IsSwimming())
-        UXRef.NotifyStudyConditionNotMet_Swimming()
-        return false
-    EndIf
-    If (PlayerRef.IsInCombat())
-        UXRef.NotifyStudyConditionNotMet_InCombat()
-        return false
-    EndIf
-    If (!dmSL_Config.GetStudyConditionsAllowTresspassing() && PlayerRef.IsTrespassing())
-        UXRef.NotifyStudyConditionNotMet_Tresspassing()
-        return false
-    EndIf
-    If (!dmSL_Config.GetStudyConditionsAllowOutdoor() && !PlayerRef.IsInInterior())
-        UXRef.NotifyStudyConditionNotMet_Outdoor()
-        return false
-    EndIf
-    If (!dmSL_Config.GetStudyConditionsAllowSneaking() && PlayerRef.IsSneaking())
-        UXRef.NotifyStudyConditionNotMet_Sneaking()
-        return false
-    EndIf
-    return true;
-EndFunction
+
+State LearnSpell
+    Event OnBeginState()
+        Spell spellLearned = StateRef.StudySession_GetSpellLearned()
+        Book spellTome = StateRef.StudySession_GetSpellTome()
+        ObjectReference spellTomeContainer = StateRef.StudySession_GetSpellTomeContainer()
+
+        PlayerRef.AddSpell(spellLearned, false)
+        StateRef.ProgressState_RemoveSpellEntry(spellLearned)
+        UXRef.NotifyLearnedNewSpell(spellLearned)
+
+        If (dmSL_Config.GetConsumeTomeOnLearn())
+            spellTomeContainer.RemoveItem(spellTome, 1, true)
+        EndIf
+
+        GoToState("Idle")
+    EndEvent
+EndState
 
 ; Calculations
 float Function GetStudySessionDuration(Spell spellLearned)
     float learRate = CalculateLearnRate(spellLearned)
-    float progress = StateRef.GetProgress(spellLearned)
+    float progress = StateRef.ProgressState_GetProgress(spellLearned)
     float estimatedTimeToLearn = (1.0 - progress) / learRate
     return UXRef.ShowStudyDurationInputPrompt(estimatedTimeToLearn)
 EndFunction
@@ -102,7 +125,6 @@ float Function CalculateProficiencyModifier(Spell spellLearned)
         i += 1
     EndWhile
     return proficiencyMod
-    
 EndFunction
 float Function CalculateSchoolProficiencyModifier(string School, int spellComplexity)
     return (PlayerRef.GetAV(school) - spellComplexity) / 100
@@ -115,3 +137,8 @@ EndFunction
 Function UnregisterEvent()
     DEST_ReferenceAliasExt.UnregisterForSpellTomeReadEvent(self)
 EndFunction
+
+; Empty State
+Event OnSpellTomeRead(Book spellBook, Spell spellLearned, ObjectReference bookContainer)
+    UXRef.NotifyStudySessionInProgress()
+EndEvent

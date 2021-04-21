@@ -1,54 +1,106 @@
 Scriptname dmSL_State extends ReferenceAlias
 {Handles the state of the mod}
 
-int _stateContainer
-int Property stateContainer Hidden
-    int Function Get()
-        Return _stateContainer
-    EndFunction
-    Function Set(int value)
-        _stateContainer = JValue.releaseAndRetain(_stateContainer, value, "dmSL_SpellLearningState")
-    EndFunction
-EndProperty
-
-int Function GetSpellEntry(Spell spellLearned)
-    If (!JFormMap.hasKey(self.stateContainer, spellLearned))
-        JFormMap.setObj(self.stateContainer, spellLearned, JMap.Object())
-    EndIf
-    JFormMap.getObj(self.stateContainer, spellLearned)
-    Return JFormMap.getObj(self.stateContainer, spellLearned)
-EndFunction
-Function RemoveSpellEntry(Spell spellLearned)
-    If(JFormMap.hasKey(self.stateContainer, spellLearned))
-        JFormMap.removeKey(self.stateContainer, spellLearned)
-    EndIf
-EndFunction
-
-float Function GetProgress(Spell spellLearned)
-    Return JValue.solveFlt(GetSpellEntry(spellLearned), ".progress", 0.0)
-EndFunction
-Function SetProgress(Spell spellLearned, float progress)
-    JValue.solveFltSetter(GetSpellEntry(spellLearned), ".progress", progress, true)
-    Dump()
-EndFunction
-
-; Iterators
-Spell Function FirstKey()
-    return JFormMap.nextKey(self.stateContainer) as Spell
-EndFunction
-Spell Function NextKey(Spell previousKey)
-    return JFormMap.nextKey(self.stateContainer, previousKey) as Spell
-EndFunction
-int Function KeyCount()
-    return JFormMap.count(self.stateContainer)
-EndFunction
-
-float Function Dump(string path = "Data/dmSL_StateDump.json")
-    JValue.writeToFile(self.stateContainer, path)
-EndFunction
 Function InitState()
-    self.stateContainer = JFormMap.object()
+    self.progressState = JFormMap.object()
+    self.studySession = JMap.object()
 EndFunction
 Function DeleteState()
-    self.stateContainer = 0
+    self.progressState = 0
+    self.studySession = 0
 EndFunction
+
+; Progress State
+    int _progressStateContainer
+    int Property progressState Hidden
+        int Function Get()
+            return _progressStateContainer
+        EndFunction
+        Function Set(int value)
+            _progressStateContainer = JValue.releaseAndRetain(_progressStateContainer, value, "dmSL_ProgressState")
+        EndFunction
+    EndProperty
+
+    ; Getters & Setters
+        int Function ProgressState_GetSpellEntry(Spell spellLearned)
+            If (!JFormMap.hasKey(self.progressState, spellLearned))
+                JFormMap.setObj(self.progressState, spellLearned, JMap.Object())
+            EndIf
+            JFormMap.getObj(self.progressState, spellLearned)
+            return JFormMap.getObj(self.progressState, spellLearned)
+        EndFunction
+        Function ProgressState_RemoveSpellEntry(Spell spellLearned)
+            If(JFormMap.hasKey(self.progressState, spellLearned))
+                JFormMap.removeKey(self.progressState, spellLearned)
+            EndIf
+        EndFunction
+
+        float Function ProgressState_GetProgress(Spell spellLearned)
+            return JValue.solveFlt(ProgressState_GetSpellEntry(spellLearned), ".Progress", 0.0)
+        EndFunction
+        Function ProgressState_SetProgress(Spell spellLearned, float progress)
+            JValue.solveFltSetter(ProgressState_GetSpellEntry(spellLearned), ".Progress", progress, true)
+        EndFunction
+
+    ; Iterators
+        Spell Function ProgressSate_FirstKey()
+            return JFormMap.nextKey(self.progressState) as Spell
+        EndFunction
+        Spell Function ProgressState_NextKey(Spell previousKey)
+            return JFormMap.nextKey(self.progressState, previousKey) as Spell
+        EndFunction
+        int Function ProgressState_KeyCount()
+            return JFormMap.count(self.progressState)
+        EndFunction
+
+; Study Session
+    int _studySessionContainer
+    int Property studySession Hidden
+        int Function Get()
+            return _studySessionContainer
+        EndFunction
+        Function Set(int value)
+            _studySessionContainer = JValue.releaseAndRetain(_studySessionContainer, value, "dmSL_Session")
+        EndFunction
+    EndProperty
+
+    ; Study Session State Enum
+        int Property StudySessionState_Idle = 0 Auto Hidden
+        int Property StudySessionState_Studying = 1 Auto Hidden
+        int Property StudySessionState_LearnSpell = 2 Auto Hidden
+
+    ; Getters & Setters
+        int Function StudySession_GetState()
+            return JValue.solveInt(self.studySession, ".State", StudySessionState_Idle)
+        EndFunction
+        Function StudySession_SetState(int sessionState)
+            JValue.solveIntSetter(self.studySession, ".State", sessionState, true)
+        EndFunction
+
+        Spell Function StudySession_GetSpellLearned()
+            return JValue.solveForm(self.studySession, ".SpellLearned", none) as Spell
+        EndFunction
+        Function StudySession_SetSpellLearned(Spell spellLearned)
+            JValue.solveFormSetter(self.studySession, ".SpellLearned", spellLearned, true)
+        EndFunction
+
+        Book Function StudySession_GetSpellTome()
+            return JValue.solveForm(self.studySession, ".SpellTome", none) as Book
+        EndFunction
+        Function StudySession_SetSpellTome(Book spellTome)
+            JValue.solveFormSetter(self.studySession, ".SpellTome", spellTome, true)
+        EndFunction
+
+        ObjectReference Function StudySession_GetSpellTomeContainer()
+            return JValue.solveForm(self.studySession, ".SpellTomeContainer", none) as ObjectReference
+        EndFunction
+        Function StudySession_SetSpellTomeContainer(ObjectReference spellTomeContainer)
+            JValue.solveFormSetter(self.studySession, ".SpellTomeContainer", spellTomeContainer, true)
+        EndFunction
+
+        float Function StudySession_GetDuration()
+            return JValue.solveFlt(self.studySession, ".Duration", 0.0)
+        EndFunction
+        Function StudySession_SetDuration(float duration)
+            JValue.solveFltSetter(self.studySession, ".Duration", duration, true)
+        EndFunction
