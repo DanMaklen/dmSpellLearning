@@ -23,6 +23,38 @@ Function SetConsumeTomeOnLearn(bool value) global
     SetBoolValue(".Config.ConsumeTomeOnLearn", value)
 EndFunction
 
+; Study Session Conditions: Allow Outdoor
+bool Function GetDefaultStudyConditionsAllowOutdoor() global
+    return false
+EndFunction
+bool Function GetStudyConditionsAllowOutdoor() global
+    return GetBoolValue(".Config.StudyConditions.AllowOutdoor", GetDefaultStudyConditionsAllowOutdoor())
+EndFunction
+Function SetStudyConditionsAllowOutdoor(bool value) global
+    SetBoolValue(".Config.StudyConditions.AllowOutdoor", value)
+EndFunction
+
+; Study Session Conditions: Allow Tresspassing
+bool Function GetDefaultStudyConditionsAllowTresspassing() global
+    return false
+EndFunction
+bool Function GetStudyConditionsAllowTresspassing() global
+    return GetBoolValue(".Config.StudyConditions.AllowTresspassing", GetDefaultStudyConditionsAllowTresspassing())
+EndFunction
+Function SetStudyConditionsAllowTresspassing(bool value) global
+    SetBoolValue(".Config.StudyConditions.AllowTresspassing", value)
+EndFunction
+
+; Study Session Conditions: Allow Sneaking
+bool Function GetDefaultStudyConditionsAllowSneaking() global
+    return true
+EndFunction
+bool Function GetStudyConditionsAllowSneaking() global
+    return GetBoolValue(".Config.StudyConditions.AllowSneaking", GetDefaultStudyConditionsAllowSneaking())
+EndFunction
+Function SetStudyConditionsAllowSneaking(bool value) global
+    SetBoolValue(".Config.StudyConditions.AllowSneaking", value)
+EndFunction
 
 ; Utility
     ; Getters
