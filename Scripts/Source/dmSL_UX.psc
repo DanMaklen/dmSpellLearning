@@ -37,8 +37,10 @@ EndFunction
     string Property ConditionNotMetReason_InCombat = "You are in combat" Auto Hidden
     string Property ConditionNotMetReason_Swimming = "You are swimming" Auto Hidden
     string Property ConditionNotMetReason_Sneaking = "You are sneaking" Auto Hidden
+    string Property ConditionNotMetReason_NotSitting = "You are not sitting" Auto Hidden
+    string Property ConditionNotMetReason_ShelfReading = "You are shelf reading" Auto Hidden
     Function NotifyStudyConditionNotMet(Spell spellLearned, string reason)
-        Debug.Notification("Cannot start studying " + spellLearned.GetName() + ": " + reason + ".")
+        Debug.Notification("Cannot study " + spellLearned.GetName() + ": " + reason + ".")
     EndFunction
 
 ; User Input
