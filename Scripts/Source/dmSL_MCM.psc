@@ -128,15 +128,15 @@ EndEvent
 
 ; Page 2: Progress Status
 	Function SetupPage_StudyProgress()
-		int count = StateRef.KeyCount()
+		int count = StateRef.ProgressState_KeyCount()
 		AddHeaderOption("Progress Report (" + count + ")")
 		AddHeaderOption("")
-		Spell spellLearned = StateRef.FirstKey()
+		Spell spellLearned = StateRef.ProgressSate_FirstKey()
 		While (spellLearned)
-			float progress = StateRef.GetProgress(spellLearned)
+			float progress = StateRef.ProgressState_GetProgress(spellLearned)
 			string progressString = dmSL_Utils.FloatToPercentage(progress)
 			AddTextOption(spellLearned.GetName(), progressString, OPTION_FLAG_DISABLED)
-			spellLearned = StateRef.NextKey(spellLearned)
+			spellLearned = StateRef.ProgressState_NextKey(spellLearned)
 		EndWhile	
 	EndFunction
 

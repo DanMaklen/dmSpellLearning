@@ -19,8 +19,8 @@ Sound Property UISpellLearnedSound Auto
 Message Property dmSL_StudySessionDurationPrompt Auto
 
 ; Message Notifications
-Function NotifyAlreadyKnowSpell(Spell spellLearned)
-    Debug.Notification("Known spell: " + spellLearned.GetName() + ".")
+Function NotifyStudySessionInProgress()
+    Debug.Notification("A study session in please wait...")
 EndFunction
 Function NotifyLearnedNewSpell(Spell spellLearned)
     Debug.Notification("Learned spell: " + spellLearned.GetName() + ".")
@@ -29,21 +29,17 @@ EndFunction
 Function NotifyProgress(Spell spellLearned, float progress, float progressDelta)
     Debug.Notification("Learning spell: " + spellLearned.GetName() + ". Progress: " + dmSL_Utils.FloatToPercentage(progress) + " (+" + dmSL_Utils.FloatToPercentage(progressDelta) + ")")
 EndFunction
-Function NotifyStudyConditionNotMet_Tresspassing()
-    Debug.Notification("Cannot start studying: You are tresspassing.")
-EndFunction
-Function NotifyStudyConditionNotMet_Outdoor()
-    Debug.Notification("Cannot start studying: You are outdoor.")
-EndFunction
-Function NotifyStudyConditionNotMet_InCombat()
-    Debug.Notification("Cannot start studying: You are in combat.")
-EndFunction
-Function NotifyStudyConditionNotMet_Swimming()
-    Debug.Notification("Cannot start studying: You are swimming.")
-EndFunction
-Function NotifyStudyConditionNotMet_Sneaking()
-    Debug.Notification("Cannot start studying: You are sneaking.")
-EndFunction
+
+; Study Condition Not Met
+    string Property ConditionNotMetReason_SpellKnown = "You already know this spell" Auto Hidden
+    string Property ConditionNotMetReason_Tresspassing = "You are tresspassing" Auto Hidden
+    string Property ConditionNotMetReason_Outdoor = "You are outdoor" Auto Hidden
+    string Property ConditionNotMetReason_InCombat = "You are in combat" Auto Hidden
+    string Property ConditionNotMetReason_Swimming = "You are swimming" Auto Hidden
+    string Property ConditionNotMetReason_Sneaking = "You are sneaking" Auto Hidden
+    Function NotifyStudyConditionNotMet(Spell spellLearned, string reason)
+        Debug.Notification("Cannot start studying " + spellLearned.GetName() + ": " + reason + ".")
+    EndFunction
 
 ; User Input
 float Function ShowStudyDurationInputPrompt(float estimatedTimeToLearn)
