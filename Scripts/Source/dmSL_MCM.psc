@@ -37,28 +37,29 @@ EndEvent
 		AddHeaderOption("Basic Configuration")
 		AddToggleOptionST("ConsumeTomeOnLearn", "Consume Spell Tome on Learn", dmSL_Config.GetConsumeTomeOnLearn())
 		AddSliderOptionST("BaseLearnRate", "Base Learning Rate", dmSL_Config.GetBaseLearnRate(), "{2}")
+		AddHeaderOption("Study Session Conditions")
+		AddToggleOptionST("StudyConditionsAllowOutdoor", "Allow Outdoor", dmSL_Config.GetStudyConditionsAllowOutdoor())
+		AddToggleOptionST("StudyConditionsAllowTresspassing", "Allow Tresspassing", dmSL_Config.GetStudyConditionsAllowTresspassing())
 	EndFunction
 
 	State ConsumeTomeOnLearn
-		Event OnSelectST()
-			bool newValue = !dmSL_Config.GetConsumeTomeOnLearn()
+		Event OnSetToggleValue(bool newValue)
 			dmSL_Config.SetConsumeTomeOnLearn(newValue)
 			SetToggleOptionValueST(newValue)
 		EndEvent
+		Event OnSelectST()
+			OnSetToggleValue(!dmSL_Config.GetConsumeTomeOnLearn())
+		EndEvent
 		Event OnHighlightST()
 			string info = \
-				"Enabled: Spell Tome WILL be consumed when the spell is learned succesfully.\n" + \
-				"Disabled: Spell Tome WILL NOT be consumed when the spell is learned sucessfully.\n" + \
+				"If enabled, Spell Tomes will be consumed when the spell is learned succesfully.\n" + \
 				BuildDefaultValueInfoTextBool(dmSL_Config.GetDefaultConsumeTomeOnLearn())
 			SetInfoText(info)
 		EndEvent
 		Event OnDefaultST()
-			bool newValue = dmSL_Config.GetDefaultConsumeTomeOnLearn()
-			dmSL_Config.SetConsumeTomeOnLearn(newValue)
-			SetToggleOptionValueST(newValue)
+			OnSetToggleValue(dmSL_Config.GetDefaultConsumeTomeOnLearn())
 		EndEvent
 	EndState
-
 	State BaseLearnRate
 		Event OnSliderOpenST()
 			SetSliderDialogStartValue(dmSL_Config.GetBaseLearnRate())
@@ -79,6 +80,42 @@ EndEvent
 		EndEvent
 		Event OnDefaultST()
 			OnSliderAcceptST(dmSL_Config.GetDefaultBaseLearnRate())
+		EndEvent
+	EndState
+	State StudyConditionsAllowOutdoor
+		Event OnSetToggleValue(bool newValue)
+			dmSL_Config.SetStudyConditionsAllowOutdoor(newValue)
+			SetToggleOptionValueST(newValue)
+		EndEvent
+		Event OnSelectST()
+			OnSetToggleValue(!dmSL_Config.GetStudyConditionsAllowOutdoor())
+		EndEvent
+		Event OnHighlightST()
+			string info = \
+				"If enabled, you can study outdoors.\n" + \
+				BuildDefaultValueInfoTextBool(dmSL_Config.GetDefaultStudyConditionsAllowOutdoor())
+			SetInfoText(info)
+		EndEvent
+		Event OnDefaultST()
+			OnSetToggleValue(!dmSL_Config.GetDefaultStudyConditionsAllowOutdoor())
+		EndEvent
+	EndState
+	State StudyConditionsAllowTresspassing
+		Event OnSetToggleValue(bool newValue)
+			dmSL_Config.SetStudyConditionsAllowTresspassing(newValue)
+			SetToggleOptionValueST(newValue)
+		EndEvent
+		Event OnSelectST()
+			OnSetToggleValue(!dmSL_Config.GetStudyConditionsAllowTresspassing())
+		EndEvent
+		Event OnHighlightST()
+			string info = \
+				"If enabled: You can study while tresspassing.\n" + \
+				BuildDefaultValueInfoTextBool(dmSL_Config.GetDefaultStudyConditionsAllowTresspassing())
+			SetInfoText(info)
+		EndEvent
+		Event OnDefaultST()
+			OnSetToggleValue(!dmSL_Config.GetDefaultStudyConditionsAllowTresspassing())
 		EndEvent
 	EndState
 
@@ -331,3 +368,6 @@ EndEvent
 			return BuildDefaultValueInfoTextString("Disabled")
 		EndIf
 	EndFunction
+
+	Event OnSetToggleValue(bool newValue)
+	EndEvent
