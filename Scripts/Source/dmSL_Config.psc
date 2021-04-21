@@ -45,6 +45,16 @@ Function SetStudyConditionsAllowTresspassing(bool value) global
     SetBoolValue(".Config.StudyConditions.AllowTresspassing", value)
 EndFunction
 
+; Study Session Conditions: Allow Sneaking
+bool Function GetDefaultStudyConditionsAllowSneaking() global
+    return true
+EndFunction
+bool Function GetStudyConditionsAllowSneaking() global
+    return GetBoolValue(".Config.StudyConditions.AllowSneaking", GetDefaultStudyConditionsAllowSneaking())
+EndFunction
+Function SetStudyConditionsAllowSneaking(bool value) global
+    SetBoolValue(".Config.StudyConditions.AllowSneaking", value)
+EndFunction
 
 ; Utility
     ; Getters

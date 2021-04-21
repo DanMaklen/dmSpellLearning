@@ -11,12 +11,16 @@ Actor Property PlayerRef Auto
 Event OnSpellTomeRead(Book spellBook, Spell spellLearned, ObjectReference bookContainer)
     If (PlayerRef.HasSpell(spellLearned))
         UXRef.NotifyAlreadyKnowSpell(spellLearned)
-        Return
+        return
+    EndIf
+
+    If (!ValidateStudyCondition())
+        return  ; Cancle
     EndIf
 
     float sessionDuration = GetStudySessionDuration(spellLearned)
     If (sessionDuration <= 0.0)
-        Return  ; Cancle
+        return  ; Cancle
     EndIf
 
     bool isStudyCompleted = StudyFor(spellLearned, sessionDuration)
@@ -40,7 +44,7 @@ bool Function StudyFor(Spell spellLearned, float sessionDuration)
     StateRef.SetProgress(spellLearned, progress)
     UXRef.NotifyProgress(spellLearned, progress, progressDelta)
     UXRef.EndStudyAnimation()    
-    Return progress >= 1.0
+    return progress >= 1.0
 EndFunction
 Function LearnSpell(Spell spellLearned)
     PlayerRef.AddSpell(spellLearned, false)
@@ -54,6 +58,30 @@ Function ConsumeSpellTome(Book spellBook, ObjectReference bookContainer = none)
     bookContainer.RemoveItem(spellBook, 1, true)
 EndFunction
 
+bool Function ValidateStudyCondition()
+    If (PlayerRef.IsSwimming())
+        UXRef.NotifyStudyConditionNotMet_Swimming()
+        return false
+    EndIf
+    If (PlayerRef.IsInCombat())
+        UXRef.NotifyStudyConditionNotMet_InCombat()
+        return false
+    EndIf
+    If (!dmSL_Config.GetStudyConditionsAllowTresspassing() && PlayerRef.IsTrespassing())
+        UXRef.NotifyStudyConditionNotMet_Tresspassing()
+        return false
+    EndIf
+    If (!dmSL_Config.GetStudyConditionsAllowOutdoor() && !PlayerRef.IsInInterior())
+        UXRef.NotifyStudyConditionNotMet_Outdoor()
+        return false
+    EndIf
+    If (!dmSL_Config.GetStudyConditionsAllowSneaking() && PlayerRef.IsSneaking())
+        UXRef.NotifyStudyConditionNotMet_Sneaking()
+        return false
+    EndIf
+    return true;
+EndFunction
+
 ; Calculations
 float Function GetStudySessionDuration(Spell spellLearned)
     float learRate = CalculateLearnRate(spellLearned)
@@ -62,7 +90,7 @@ float Function GetStudySessionDuration(Spell spellLearned)
     return UXRef.ShowStudyDurationInputPrompt(estimatedTimeToLearn)
 EndFunction
 float Function CalculateLearnRate(Spell spellLearned)
-    Return dmSL_Config.GetBaseLearnRate() * (1 + CalculateProficiencyModifier(spellLearned))
+    return dmSL_Config.GetBaseLearnRate() * (1 + CalculateProficiencyModifier(spellLearned))
 EndFunction
 float Function CalculateProficiencyModifier(Spell spellLearned)
     float proficiencyMod = 0.0
@@ -73,11 +101,11 @@ float Function CalculateProficiencyModifier(Spell spellLearned)
         proficiencyMod += CalculateSchoolProficiencyModifier(effect.GetAssociatedSkill(), effect.GetSkillLevel()) / effectList.Length
         i += 1
     EndWhile
-    Return proficiencyMod
+    return proficiencyMod
     
 EndFunction
 float Function CalculateSchoolProficiencyModifier(string School, int spellComplexity)
-    Return (PlayerRef.GetAV(school) - spellComplexity) / 100
+    return (PlayerRef.GetAV(school) - spellComplexity) / 100
 EndFunction
 
 ; Setup

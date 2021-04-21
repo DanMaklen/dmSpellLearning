@@ -29,6 +29,21 @@ EndFunction
 Function NotifyProgress(Spell spellLearned, float progress, float progressDelta)
     Debug.Notification("Learning spell: " + spellLearned.GetName() + ". Progress: " + dmSL_Utils.FloatToPercentage(progress) + " (+" + dmSL_Utils.FloatToPercentage(progressDelta) + ")")
 EndFunction
+Function NotifyStudyConditionNotMet_Tresspassing()
+    Debug.Notification("Cannot start studying: You are tresspassing.")
+EndFunction
+Function NotifyStudyConditionNotMet_Outdoor()
+    Debug.Notification("Cannot start studying: You are outdoor.")
+EndFunction
+Function NotifyStudyConditionNotMet_InCombat()
+    Debug.Notification("Cannot start studying: You are in combat.")
+EndFunction
+Function NotifyStudyConditionNotMet_Swimming()
+    Debug.Notification("Cannot start studying: You are swimming.")
+EndFunction
+Function NotifyStudyConditionNotMet_Sneaking()
+    Debug.Notification("Cannot start studying: You are sneaking.")
+EndFunction
 
 ; User Input
 float Function ShowStudyDurationInputPrompt(float estimatedTimeToLearn)

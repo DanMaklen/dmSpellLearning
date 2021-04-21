@@ -39,7 +39,8 @@ EndEvent
 		AddSliderOptionST("BaseLearnRate", "Base Learning Rate", dmSL_Config.GetBaseLearnRate(), "{2}")
 		AddHeaderOption("Study Session Conditions")
 		AddToggleOptionST("StudyConditionsAllowOutdoor", "Allow Outdoor", dmSL_Config.GetStudyConditionsAllowOutdoor())
-		AddToggleOptionST("StudyConditionsAllowTresspassing", "Allow Tresspassing", dmSL_Config.GetStudyConditionsAllowTresspassing())
+		AddToggleOptionST("StudyConditionsAllowTresspassing", "Allow While Tresspassing", dmSL_Config.GetStudyConditionsAllowTresspassing())
+		AddToggleOptionST("StudyConditionsAllowSneaking", "Allow While Sneaking", dmSL_Config.GetStudyConditionsAllowSneaking())
 	EndFunction
 
 	State ConsumeTomeOnLearn
@@ -51,15 +52,8 @@ EndEvent
 			OnSetToggleValue(!dmSL_Config.GetConsumeTomeOnLearn())
 		EndEvent
 		Event OnHighlightST()
-<<<<<<< HEAD
-			string info = \
-				"If enabled, Spell Tomes will be consumed when the spell is learned succesfully.\n" + \
-				BuildDefaultValueInfoTextBool(dmSL_Config.GetDefaultConsumeTomeOnLearn())
-			SetInfoText(info)
-=======
 			string infoText = "If enabled, Spell Tome will be consumed when the spell is learned succesfully."
-			SetInfoTextWithDefaultString(infoText, dmSL_Config.GetDefaultConsumeTomeOnLearn())
->>>>>>> master
+			SetInfoTextWithDefaultToggle(infoText, dmSL_Config.GetDefaultConsumeTomeOnLearn())
 		EndEvent
 		Event OnDefaultST()
 			OnSetToggleValue(dmSL_Config.GetDefaultConsumeTomeOnLearn())
@@ -95,10 +89,7 @@ EndEvent
 			OnSetToggleValue(!dmSL_Config.GetStudyConditionsAllowOutdoor())
 		EndEvent
 		Event OnHighlightST()
-			string info = \
-				"If enabled, you can study outdoors.\n" + \
-				BuildDefaultValueInfoTextBool(dmSL_Config.GetDefaultStudyConditionsAllowOutdoor())
-			SetInfoText(info)
+			SetInfoTextWithDefaultToggle("If enabled, you can study outdoors.", dmSL_Config.GetDefaultStudyConditionsAllowOutdoor())
 		EndEvent
 		Event OnDefaultST()
 			OnSetToggleValue(!dmSL_Config.GetDefaultStudyConditionsAllowOutdoor())
@@ -113,13 +104,25 @@ EndEvent
 			OnSetToggleValue(!dmSL_Config.GetStudyConditionsAllowTresspassing())
 		EndEvent
 		Event OnHighlightST()
-			string info = \
-				"If enabled: You can study while tresspassing.\n" + \
-				BuildDefaultValueInfoTextBool(dmSL_Config.GetDefaultStudyConditionsAllowTresspassing())
-			SetInfoText(info)
+			SetInfoTextWithDefaultToggle("If enabled: You can study while tresspassing.", dmSL_Config.GetDefaultStudyConditionsAllowTresspassing())
 		EndEvent
 		Event OnDefaultST()
 			OnSetToggleValue(!dmSL_Config.GetDefaultStudyConditionsAllowTresspassing())
+		EndEvent
+	EndState
+	State StudyConditionsAllowSneaking
+		Event OnSetToggleValue(bool newValue)
+			dmSL_Config.SetStudyConditionsAllowSneaking(newValue)
+			SetToggleOptionValueST(newValue)
+		EndEvent
+		Event OnSelectST()
+			OnSetToggleValue(!dmSL_Config.GetStudyConditionsAllowSneaking())
+		EndEvent
+		Event OnHighlightST()
+			SetInfoTextWithDefaultToggle("If enabled: You can study while sneaking.", dmSL_Config.GetDefaultStudyConditionsAllowSneaking())
+		EndEvent
+		Event OnDefaultST()
+			OnSetToggleValue(!dmSL_Config.GetDefaultStudyConditionsAllowSneaking())
 		EndEvent
 	EndState
 
