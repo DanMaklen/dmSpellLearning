@@ -23,39 +23,57 @@ Function SetConsumeTomeOnLearn(bool value) global
     SetBoolValue(".Config.ConsumeTomeOnLearn", value)
 EndFunction
 
-; Study Session Conditions: Allow Outdoor
-bool Function GetDefaultStudyConditionsAllowOutdoor() global
-    return false
-EndFunction
-bool Function GetStudyConditionsAllowOutdoor() global
-    return GetBoolValue(".Config.StudyConditions.AllowOutdoor", GetDefaultStudyConditionsAllowOutdoor())
-EndFunction
-Function SetStudyConditionsAllowOutdoor(bool value) global
-    SetBoolValue(".Config.StudyConditions.AllowOutdoor", value)
-EndFunction
-
-; Study Session Conditions: Allow Tresspassing
-bool Function GetDefaultStudyConditionsAllowTresspassing() global
-    return false
-EndFunction
-bool Function GetStudyConditionsAllowTresspassing() global
-    return GetBoolValue(".Config.StudyConditions.AllowTresspassing", GetDefaultStudyConditionsAllowTresspassing())
-EndFunction
-Function SetStudyConditionsAllowTresspassing(bool value) global
-    SetBoolValue(".Config.StudyConditions.AllowTresspassing", value)
-EndFunction
-
-; Study Session Conditions: Allow Sneaking
-bool Function GetDefaultStudyConditionsAllowSneaking() global
-    return true
-EndFunction
-bool Function GetStudyConditionsAllowSneaking() global
-    return GetBoolValue(".Config.StudyConditions.AllowSneaking", GetDefaultStudyConditionsAllowSneaking())
-EndFunction
-Function SetStudyConditionsAllowSneaking(bool value) global
-    SetBoolValue(".Config.StudyConditions.AllowSneaking", value)
-EndFunction
-
+; Study Session Conditions:
+    ; Allow Outdoor
+        bool Function GetDefaultStudyConditionsAllowOutdoor() global
+            return false
+        EndFunction
+        bool Function GetStudyConditionsAllowOutdoor() global
+            return GetBoolValue(".Config.StudyConditions.AllowOutdoor", GetDefaultStudyConditionsAllowOutdoor())
+        EndFunction
+        Function SetStudyConditionsAllowOutdoor(bool value) global
+            SetBoolValue(".Config.StudyConditions.AllowOutdoor", value)
+        EndFunction
+    ; Allow Tresspassing
+        bool Function GetDefaultStudyConditionsAllowTresspassing() global
+            return false
+        EndFunction
+        bool Function GetStudyConditionsAllowTresspassing() global
+            return GetBoolValue(".Config.StudyConditions.AllowTresspassing", GetDefaultStudyConditionsAllowTresspassing())
+        EndFunction
+        Function SetStudyConditionsAllowTresspassing(bool value) global
+            SetBoolValue(".Config.StudyConditions.AllowTresspassing", value)
+        EndFunction
+    ; Allow Sneaking
+        bool Function GetDefaultStudyConditionsAllowSneaking() global
+            return true
+        EndFunction
+        bool Function GetStudyConditionsAllowSneaking() global
+            return GetBoolValue(".Config.StudyConditions.AllowSneaking", GetDefaultStudyConditionsAllowSneaking())
+        EndFunction
+        Function SetStudyConditionsAllowSneaking(bool value) global
+            SetBoolValue(".Config.StudyConditions.AllowSneaking", value)
+        EndFunction
+    ; LimitTo Sitting
+        bool Function GetDefaultStudyConditionsLimitToSitting() global
+            return true
+        EndFunction
+        bool Function GetStudyConditionsLimitToSitting() global
+            return GetBoolValue(".Config.StudyConditions.LimitToSitting", GetDefaultStudyConditionsLimitToSitting())
+        EndFunction
+        Function SetStudyConditionsLimitToSitting(bool value) global
+            SetBoolValue(".Config.StudyConditions.LimitToSitting", value)
+        EndFunction
+    ; Allow Shelf Studying
+        bool Function GetDefaultStudyConditionsAllowShelfStudying() global
+            return false
+        EndFunction
+        bool Function GetStudyConditionsAllowShelfStudying() global
+            return GetBoolValue(".Config.StudyConditions.AllowShelfStudying", GetDefaultStudyConditionsAllowShelfStudying())
+        EndFunction
+        Function SetStudyConditionsAllowShelfStudying(bool value) global
+            SetBoolValue(".Config.StudyConditions.AllowShelfStudying", value)
+        EndFunction
 ; Utility
     ; Getters
         bool Function GetBoolValue(string path, bool default) global
@@ -70,7 +88,6 @@ EndFunction
         string Function GetStringValue(string path, string default) global
             return JDB.solveStr(dmSL_JDBPrefix() + path, default)
         EndFunction
-
     ; Setters
         Function SetBoolValue(string path, bool value) global
             JDB.solveIntSetter(dmSL_JDBPrefix() + path, value as int, true)

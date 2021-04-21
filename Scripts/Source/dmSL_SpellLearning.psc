@@ -17,6 +17,10 @@ Auto State Idle
         StateRef.StudySession_SetSpellTomeContainer(none)
     EndEvent
     Event OnSpellTomeRead(Book spellTome, Spell spellLearned, ObjectReference spellTomeContainer)
+        If (!spellTomeContainer)
+            spellTomeContainer = PlayerRef
+        EndIf
+
         If (PlayerRef.HasSpell(spellLearned))
             UXRef.NotifyStudyConditionNotMet(spellLearned, UXRef.ConditionNotMetReason_SpellKnown)
             return
@@ -33,6 +37,10 @@ Auto State Idle
             UXRef.NotifyStudyConditionNotMet(spellLearned, UXRef.ConditionNotMetReason_Tresspassing)
             return
         EndIf
+        If (!dmSL_Config.GetStudyConditionsAllowShelfStudying() && spellTomeContainer != PlayerRef)
+            UXRef.NotifyStudyConditionNotMet(spellLearned, UXRef.ConditionNotMetReason_ShelfReading)
+            return
+        EndIf
         If (!dmSL_Config.GetStudyConditionsAllowOutdoor() && !PlayerRef.IsInInterior())
             UXRef.NotifyStudyConditionNotMet(spellLearned, UXRef.ConditionNotMetReason_Outdoor)
             return
@@ -41,14 +49,14 @@ Auto State Idle
             UXRef.NotifyStudyConditionNotMet(spellLearned, UXRef.ConditionNotMetReason_Sneaking)
             return
         EndIf
+        If (dmSL_Config.GetStudyConditionsLimitToSitting() && PlayerRef.GetSitState() != 3)
+            UXRef.NotifyStudyConditionNotMet(spellLearned, UXRef.ConditionNotMetReason_NotSitting)
+            return
+        EndIf
         
         float sessionDuration = GetStudySessionDuration(spellLearned)
         If (sessionDuration <= 0.0)
             return  ; Cancle
-        EndIf
-
-        If (!spellTomeContainer)
-            spellTomeContainer = PlayerRef
         EndIf
 
         StateRef.StudySession_SetSpellLearned(spellLearned)
@@ -85,7 +93,6 @@ State Studying
         UXRef.EndStudyAnimation()
     EndEvent
 EndState
-
 
 State LearnSpell
     Event OnBeginState()

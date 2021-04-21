@@ -37,10 +37,7 @@ EndEvent
 		AddHeaderOption("Basic Configuration")
 		AddToggleOptionST("ConsumeTomeOnLearn", "Consume Spell Tome on Learn", dmSL_Config.GetConsumeTomeOnLearn())
 		AddSliderOptionST("BaseLearnRate", "Base Learning Rate", dmSL_Config.GetBaseLearnRate(), "{2}")
-		AddHeaderOption("Study Session Conditions")
-		AddToggleOptionST("StudyConditionsAllowOutdoor", "Allow Outdoor", dmSL_Config.GetStudyConditionsAllowOutdoor())
-		AddToggleOptionST("StudyConditionsAllowTresspassing", "Allow While Tresspassing", dmSL_Config.GetStudyConditionsAllowTresspassing())
-		AddToggleOptionST("StudyConditionsAllowSneaking", "Allow While Sneaking", dmSL_Config.GetStudyConditionsAllowSneaking())
+		AddStudySessionConditions()
 	EndFunction
 
 	State ConsumeTomeOnLearn
@@ -80,52 +77,95 @@ EndEvent
 			OnSliderAcceptST(dmSL_Config.GetDefaultBaseLearnRate())
 		EndEvent
 	EndState
-	State StudyConditionsAllowOutdoor
-		Event OnSetToggleValue(bool newValue)
-			dmSL_Config.SetStudyConditionsAllowOutdoor(newValue)
-			SetToggleOptionValueST(newValue)
-		EndEvent
-		Event OnSelectST()
-			OnSetToggleValue(!dmSL_Config.GetStudyConditionsAllowOutdoor())
-		EndEvent
-		Event OnHighlightST()
-			SetInfoTextWithDefaultToggle("If enabled, you can study outdoors.", dmSL_Config.GetDefaultStudyConditionsAllowOutdoor())
-		EndEvent
-		Event OnDefaultST()
-			OnSetToggleValue(!dmSL_Config.GetDefaultStudyConditionsAllowOutdoor())
-		EndEvent
-	EndState
-	State StudyConditionsAllowTresspassing
-		Event OnSetToggleValue(bool newValue)
-			dmSL_Config.SetStudyConditionsAllowTresspassing(newValue)
-			SetToggleOptionValueST(newValue)
-		EndEvent
-		Event OnSelectST()
-			OnSetToggleValue(!dmSL_Config.GetStudyConditionsAllowTresspassing())
-		EndEvent
-		Event OnHighlightST()
-			SetInfoTextWithDefaultToggle("If enabled: You can study while tresspassing.", dmSL_Config.GetDefaultStudyConditionsAllowTresspassing())
-		EndEvent
-		Event OnDefaultST()
-			OnSetToggleValue(!dmSL_Config.GetDefaultStudyConditionsAllowTresspassing())
-		EndEvent
-	EndState
-	State StudyConditionsAllowSneaking
-		Event OnSetToggleValue(bool newValue)
-			dmSL_Config.SetStudyConditionsAllowSneaking(newValue)
-			SetToggleOptionValueST(newValue)
-		EndEvent
-		Event OnSelectST()
-			OnSetToggleValue(!dmSL_Config.GetStudyConditionsAllowSneaking())
-		EndEvent
-		Event OnHighlightST()
-			SetInfoTextWithDefaultToggle("If enabled: You can study while sneaking.", dmSL_Config.GetDefaultStudyConditionsAllowSneaking())
-		EndEvent
-		Event OnDefaultST()
-			OnSetToggleValue(!dmSL_Config.GetDefaultStudyConditionsAllowSneaking())
-		EndEvent
-	EndState
 
+
+	; Study Session Conditions
+		Function AddStudySessionConditions()
+			AddHeaderOption("Study Session Conditions")
+			AddToggleOptionST("StudyConditionsAllowOutdoor", "Allow Outdoor", dmSL_Config.GetStudyConditionsAllowOutdoor())
+			AddToggleOptionST("StudyConditionsAllowTresspassing", "Allow While Tresspassing", dmSL_Config.GetStudyConditionsAllowTresspassing())
+			AddToggleOptionST("StudyConditionsAllowSneaking", "Allow While Sneaking", dmSL_Config.GetStudyConditionsAllowSneaking())
+			AddToggleOptionST("StudyConditionsLimitToSitting", "Limit To Sitting", dmSL_Config.GetStudyConditionsLimitToSitting())
+			AddToggleOptionST("StudyConditionsAllowShelfStudying", "Allow Shelf Studying", dmSL_Config.GetStudyConditionsAllowShelfStudying())
+		EndFunction
+		State StudyConditionsAllowOutdoor
+			Event OnSetToggleValue(bool newValue)
+				dmSL_Config.SetStudyConditionsAllowOutdoor(newValue)
+				SetToggleOptionValueST(newValue)
+			EndEvent
+			Event OnSelectST()
+				OnSetToggleValue(!dmSL_Config.GetStudyConditionsAllowOutdoor())
+			EndEvent
+			Event OnHighlightST()
+				SetInfoTextWithDefaultToggle("If enabled, you can study outdoors.", dmSL_Config.GetDefaultStudyConditionsAllowOutdoor())
+			EndEvent
+			Event OnDefaultST()
+				OnSetToggleValue(!dmSL_Config.GetDefaultStudyConditionsAllowOutdoor())
+			EndEvent
+		EndState
+		State StudyConditionsAllowTresspassing
+			Event OnSetToggleValue(bool newValue)
+				dmSL_Config.SetStudyConditionsAllowTresspassing(newValue)
+				SetToggleOptionValueST(newValue)
+			EndEvent
+			Event OnSelectST()
+				OnSetToggleValue(!dmSL_Config.GetStudyConditionsAllowTresspassing())
+			EndEvent
+			Event OnHighlightST()
+				SetInfoTextWithDefaultToggle("If enabled, you can study while tresspassing.", dmSL_Config.GetDefaultStudyConditionsAllowTresspassing())
+			EndEvent
+			Event OnDefaultST()
+				OnSetToggleValue(!dmSL_Config.GetDefaultStudyConditionsAllowTresspassing())
+			EndEvent
+		EndState
+		State StudyConditionsAllowSneaking
+			Event OnSetToggleValue(bool newValue)
+				dmSL_Config.SetStudyConditionsAllowSneaking(newValue)
+				SetToggleOptionValueST(newValue)
+			EndEvent
+			Event OnSelectST()
+				OnSetToggleValue(!dmSL_Config.GetStudyConditionsAllowSneaking())
+			EndEvent
+			Event OnHighlightST()
+				SetInfoTextWithDefaultToggle("If enabled, You can study while sneaking.", dmSL_Config.GetDefaultStudyConditionsAllowSneaking())
+			EndEvent
+			Event OnDefaultST()
+				OnSetToggleValue(!dmSL_Config.GetDefaultStudyConditionsAllowSneaking())
+			EndEvent
+		EndState
+		State StudyConditionsLimitToSitting
+			Event OnSetToggleValue(bool newValue)
+				dmSL_Config.SetStudyConditionsLimitToSitting(newValue)
+				SetToggleOptionValueST(newValue)
+			EndEvent
+			Event OnSelectST()
+				OnSetToggleValue(!dmSL_Config.GetStudyConditionsLimitToSitting())
+			EndEvent
+			Event OnHighlightST()
+				SetInfoTextWithDefaultToggle("If enabled, you can only study while sitting.", dmSL_Config.GetDefaultStudyConditionsLimitToSitting())
+			EndEvent
+			Event OnDefaultST()
+				OnSetToggleValue(!dmSL_Config.GetDefaultStudyConditionsLimitToSitting())
+			EndEvent
+		EndState
+		State StudyConditionsAllowShelfStudying
+			Event OnSetToggleValue(bool newValue)
+				dmSL_Config.SetStudyConditionsAllowShelfStudying(newValue)
+				SetToggleOptionValueST(newValue)
+			EndEvent
+			Event OnSelectST()
+				OnSetToggleValue(!dmSL_Config.GetStudyConditionsAllowShelfStudying())
+			EndEvent
+			Event OnHighlightST()
+				string infoText = \
+					"If enabled, you can study while reading from the book from other containers." + \
+					"You can still study while reading from player's inventory"
+				SetInfoTextWithDefaultToggle(infoText, dmSL_Config.GetDefaultStudyConditionsAllowShelfStudying())
+			EndEvent
+			Event OnDefaultST()
+				OnSetToggleValue(!dmSL_Config.GetDefaultStudyConditionsAllowShelfStudying())
+			EndEvent
+		EndState
 ; Page 2: Progress Status
 	Function SetupPage_StudyProgress()
 		int count = StateRef.ProgressState_KeyCount()
