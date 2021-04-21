@@ -51,10 +51,15 @@ EndEvent
 			OnSetToggleValue(!dmSL_Config.GetConsumeTomeOnLearn())
 		EndEvent
 		Event OnHighlightST()
+<<<<<<< HEAD
 			string info = \
 				"If enabled, Spell Tomes will be consumed when the spell is learned succesfully.\n" + \
 				BuildDefaultValueInfoTextBool(dmSL_Config.GetDefaultConsumeTomeOnLearn())
 			SetInfoText(info)
+=======
+			string infoText = "If enabled, Spell Tome will be consumed when the spell is learned succesfully."
+			SetInfoTextWithDefaultString(infoText, dmSL_Config.GetDefaultConsumeTomeOnLearn())
+>>>>>>> master
 		EndEvent
 		Event OnDefaultST()
 			OnSetToggleValue(dmSL_Config.GetDefaultConsumeTomeOnLearn())
@@ -72,11 +77,10 @@ EndEvent
 			SetSliderOptionValueST(val, "{2}")
 		EndEvent
 		Event OnHighlightST()
-			string info = \
+			string infoText = \
 				"Controls the base progress done per hour to learn a new spell before any modifiers are applied.\n" + \
-				"The higher amount the faster spell is learned.\n" + \
-				BuildDefaultValueInfoTextFloat(dmSL_Config.GetDefaultBaseLearnRate())
-			SetInfoText(info)
+				"The higher amount the faster spell is learned."
+			SetInfoTextWithDefaultFloat(infoText, dmSL_Config.GetDefaultBaseLearnRate())
 		EndEvent
 		Event OnDefaultST()
 			OnSliderAcceptST(dmSL_Config.GetDefaultBaseLearnRate())
@@ -198,7 +202,7 @@ EndEvent
 			SetPaginationCurs(0, val as int)
 		EndEvent
 		Event OnHighlightST()
-			SetInfoText("Set page size [10 - 100]\n" + BuildDefaultValueInfoTextInt(20))
+			SetInfoTextWithDefaultInt("Set page size [10 - 100]", 20)
 		EndEvent
 		Event OnDefaultST()
 			OnSliderAcceptST(20)
@@ -224,7 +228,7 @@ EndEvent
 			SetPaginationCurs((val as int - 1) * pageSize, pageSize)
 		EndEvent
 		Event OnHighlightST()
-			SetInfoText("Select page\n" + BuildDefaultValueInfoTextInt(1))
+			SetInfoTextWithDefaultInt("Select page", 1)
 		EndEvent
 		Event OnDefaultST()
 			OnSliderAcceptST(1)
@@ -241,9 +245,10 @@ EndEvent
 			SetMenuOptionValueST(schoolFilterOptions[index])
 		EndEvent
 		Event OnHighlightST()
-			SetInfoText("Filter by spell's school.\n" + \
-				"Note: If a spell have multiple magic effects and only of them match the spell will be included in the list." + \
-				BuildDefaultValueInfoTextString(schoolFilterOptions[0]))
+			string infoText = \
+				"Filter by spell's school.\n" + \
+				"Note: If a spell have multiple magic effects and only of them match the spell will be included in the list."
+			SetInfoTextWithDefaultString(infoText, schoolFilterOptions[0])
 		EndEvent
 		Event OnDefaultST()
 			OnSliderAcceptST(0)
@@ -260,7 +265,7 @@ EndEvent
 			SetMenuOptionValueST(knownSpellsFilterOptions[index])
 		EndEvent
 		Event OnHighlightST()
-			SetInfoText("Filter by known spells.\n" + BuildDefaultValueInfoTextString(knownSpellsFilterOptions[0]))
+			SetInfoTextWithDefaultString("Filter by known spells.", knownSpellsFilterOptions[0])
 		EndEvent
 		Event OnDefaultST()
 			OnSliderAcceptST(0)
@@ -352,20 +357,20 @@ EndEvent
 	EndFunction
 
 ; Utilities
-	string Function BuildDefaultValueInfoTextString(string val)
-		return "(Default: " + val + ")"
+	Function SetInfoTextWithDefaultString(string info, string defaultVal)
+		SetInfoText(info + "\n(Default: " + defaultVal + ")")
 	EndFunction
-	string Function BuildDefaultValueInfoTextFloat(float val)
-		return BuildDefaultValueInfoTextString(dmSL_Utils.FloatToString(val))
+	Function SetInfoTextWithDefaultFloat(string info, float defaultVal)
+		SetInfoTextWithDefaultString(info, dmSL_Utils.FloatToString(defaultVal))
 	EndFunction
-	string Function BuildDefaultValueInfoTextInt(int val)
-		return BuildDefaultValueInfoTextString(val)
+	Function SetInfoTextWithDefaultInt(string info, int defaultVal)
+		SetInfoTextWithDefaultString(info, defaultVal)
 	EndFunction
-	string Function BuildDefaultValueInfoTextBool(bool val)
-		If (val)
-			return BuildDefaultValueInfoTextString("Enabled")
+	Function SetInfoTextWithDefaultToggle(string info, bool defaultVal)
+		If (defaultVal)
+			SetInfoTextWithDefaultString(info, "Enabled")
 		Else
-			return BuildDefaultValueInfoTextString("Disabled")
+			SetInfoTextWithDefaultString(info, "Disabled")
 		EndIf
 	EndFunction
 
