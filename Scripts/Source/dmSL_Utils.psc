@@ -27,3 +27,10 @@ int Function MinInt(int a, int b) global
     EndIf
     return b
 EndFunction
+
+float Function MaxFloat(float a, float b) global
+    If (a > b)
+        return a
+    EndIf
+    return b
+EndFunction

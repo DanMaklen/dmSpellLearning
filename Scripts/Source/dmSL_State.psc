@@ -68,6 +68,7 @@ EndFunction
         int Property StudySessionState_Idle = 0 Auto Hidden
         int Property StudySessionState_Studying = 1 Auto Hidden
         int Property StudySessionState_LearnSpell = 2 Auto Hidden
+        int Property StudySessionState_Cooldown = 3 Auto Hidden
 
     ; Getters & Setters
         int Function StudySession_GetState()
@@ -103,4 +104,11 @@ EndFunction
         EndFunction
         Function StudySession_SetDuration(float duration)
             JValue.solveFltSetter(self.studySession, ".Duration", duration, true)
+        EndFunction
+
+        float Function StudySession_GetCooldownEndAt()
+            return JValue.solveFlt(self.studySession, ".CooldownEndAt", 0.0)
+        EndFunction
+        Function StudySession_SetCooldownEndAt(float cooldownEndAt)
+            JValue.solveFltSetter(self.studySession, ".CooldownEndAt", cooldownEndAt, true)
         EndFunction

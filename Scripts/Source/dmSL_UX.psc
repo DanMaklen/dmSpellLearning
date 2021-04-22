@@ -29,6 +29,9 @@ EndFunction
 Function NotifyProgress(Spell spellLearned, float progress, float progressDelta)
     Debug.Notification("Learning spell: " + spellLearned.GetName() + ". Progress: " + dmSL_Utils.FloatToPercentage(progress) + " (+" + dmSL_Utils.FloatToPercentage(progressDelta) + ")")
 EndFunction
+Function NotifyCooldown(float remCooldown)
+    Debug.Notification("Cannot study for " + dmSL_Utils.FloatToString(remCooldown) + " more hours.")
+EndFunction
 
 ; Study Condition Not Met
     string Property ConditionNotMetReason_SpellKnown = "You already know this spell" Auto Hidden
