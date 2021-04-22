@@ -1,28 +1,37 @@
 Scriptname dmSL_Config Hidden
 {Central unit to handle all config}
 
-; Base Learn Rate
-float Function GetDefaultBaseLearnRate() global
-    return 0.10
-EndFunction
-float Function GetBaseLearnRate() global
-    return GetFloatValue(".Config.BaseLearnRate", GetDefaultBaseLearnRate())
-EndFunction
-Function SetBaseLearnRate(float value) global
-    SetFloatValue(".Config.BaseLearnRate", value)
-EndFunction
-
-; Consume Tome on Learn
-bool Function GetDefaultConsumeTomeOnLearn() global
-    return true
-EndFunction
-bool Function GetConsumeTomeOnLearn() global
-    return GetBoolValue(".Config.ConsumeTomeOnLearn", GetDefaultConsumeTomeOnLearn())
-EndFunction
-Function SetConsumeTomeOnLearn(bool value) global
-    SetBoolValue(".Config.ConsumeTomeOnLearn", value)
-EndFunction
-
+; Study Session
+    ; Base Learn Rate
+        float Function GetDefaultBaseLearnRate() global
+            return 0.10
+        EndFunction
+        float Function GetBaseLearnRate() global
+            return GetFloatValue(".Config.BaseLearnRate", GetDefaultBaseLearnRate())
+        EndFunction
+        Function SetBaseLearnRate(float value) global
+            SetFloatValue(".Config.BaseLearnRate", value)
+        EndFunction
+    ; Consume Tome on Learn
+        bool Function GetDefaultConsumeTomeOnLearn() global
+            return true
+        EndFunction
+        bool Function GetConsumeTomeOnLearn() global
+            return GetBoolValue(".Config.ConsumeTomeOnLearn", GetDefaultConsumeTomeOnLearn())
+        EndFunction
+        Function SetConsumeTomeOnLearn(bool value) global
+            SetBoolValue(".Config.ConsumeTomeOnLearn", value)
+        EndFunction
+    ; Cooldown Factor
+        float Function GetDefaultCooldownFactor() global
+            return 1.5
+        EndFunction
+        float Function GetCooldownFactor() global
+            return GetFloatValue(".Config.CooldownFactor", GetDefaultCooldownFactor())
+        EndFunction
+        Function SetCooldownFactor(float value) global
+            SetFloatValue(".Config.CooldownFactor", value)
+        EndFunction
 ; Study Session Conditions:
     ; Allow Outdoor
         bool Function GetDefaultStudyConditionsAllowOutdoor() global

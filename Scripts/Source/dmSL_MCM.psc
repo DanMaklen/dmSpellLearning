@@ -37,6 +37,7 @@ EndEvent
 		AddHeaderOption("Basic Configuration")
 		AddToggleOptionST("ConsumeTomeOnLearn", "Consume Spell Tome on Learn", dmSL_Config.GetConsumeTomeOnLearn())
 		AddSliderOptionST("BaseLearnRate", "Base Learning Rate", dmSL_Config.GetBaseLearnRate(), "{2}")
+		AddSliderOptionST("CooldownFactor", "Cooldown Factor", dmSL_Config.GetCooldownFactor(), "{2}")
 		AddStudySessionConditions()
 	EndFunction
 
@@ -77,7 +78,27 @@ EndEvent
 			OnSliderAcceptST(dmSL_Config.GetDefaultBaseLearnRate())
 		EndEvent
 	EndState
-
+	State CooldownFactor
+		Event OnSliderOpenST()
+			SetSliderDialogStartValue(dmSL_Config.GetCooldownFactor())
+			SetSliderDialogDefaultValue(dmSL_Config.GetDefaultCooldownFactor())
+			SetSliderDialogRange(0.25, 5.0)
+			SetSliderDialogInterval(0.25)
+		EndEvent
+		Event OnSliderAcceptST(float val)
+			dmSL_Config.SetCooldownFactor(val)
+			SetSliderOptionValueST(val, "{2}")
+		EndEvent
+		Event OnHighlightST()
+			string infoText = \
+				"Controls the base cooldown between study sessions.\n" + \
+				"The higher values the longer the cooldown will be."
+			SetInfoTextWithDefaultFloat(infoText, dmSL_Config.GetDefaultCooldownFactor())
+		EndEvent
+		Event OnDefaultST()
+			OnSliderAcceptST(dmSL_Config.GetDefaultCooldownFactor())
+		EndEvent
+	EndState
 
 	; Study Session Conditions
 		Function AddStudySessionConditions()
