@@ -13,7 +13,9 @@ Function Mod(float val)
 EndFunction
 
 Event OnValueChanged(float newVal)
-    If (newVal > 10)
+    If (newVal < 20)
+        PlayerRef.RemoveSpell(dmSL_ExhaustionDebuff)
+    Else
         PlayerRef.AddSpell(dmSL_ExhaustionDebuff, false)
     EndIf
     Debug.Notification("Study Exhaustion: " + dm_Utils.FloatToString(newVal))
