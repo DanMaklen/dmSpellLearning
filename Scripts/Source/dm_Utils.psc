@@ -1,4 +1,4 @@
-Scriptname dmSL_Utils Hidden
+Scriptname dm_Utils Hidden
 {Some utility functions used through out the code}
 
 ; Transforms float to string with with certain precision
@@ -33,4 +33,8 @@ float Function MaxFloat(float a, float b) global
         return a
     EndIf
     return b
+EndFunction
+
+float Function GetGameTimeInHours() global
+    return Utility.GetCurrentGameTime() * 24
 EndFunction

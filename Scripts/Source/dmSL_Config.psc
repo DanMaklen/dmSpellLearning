@@ -22,15 +22,15 @@ Scriptname dmSL_Config Hidden
         Function SetConsumeTomeOnLearn(bool value) global
             SetBoolValue(".Config.ConsumeTomeOnLearn", value)
         EndFunction
-    ; Cooldown Factor
-        float Function GetDefaultCooldownFactor() global
+    ; Cooldown Base Factor
+        float Function GetDefaultCooldownBaseFactor() global
             return 1.5
         EndFunction
-        float Function GetCooldownFactor() global
-            return GetFloatValue(".Config.CooldownFactor", GetDefaultCooldownFactor())
+        float Function GetCooldownBaseFactor() global
+            return GetFloatValue(".Config.CooldownBaseFactor", GetDefaultCooldownBaseFactor())
         EndFunction
-        Function SetCooldownFactor(float value) global
-            SetFloatValue(".Config.CooldownFactor", value)
+        Function SetCooldownBaseFactor(float value) global
+            SetFloatValue(".Config.CooldownBaseFactor", value)
         EndFunction
 ; Study Session Conditions:
     ; Allow Outdoor
@@ -83,6 +83,28 @@ Scriptname dmSL_Config Hidden
         Function SetStudyConditionsAllowShelfStudying(bool value) global
             SetBoolValue(".Config.StudyConditions.AllowShelfStudying", value)
         EndFunction
+; Exhaustion
+    ; Exhaustion Base Factor
+        float Function GetDefaultExhaustionBaseFactor() global
+            return 2.5
+        EndFunction
+        float Function GetExhaustionBaseFactor() global
+            return GetFloatValue(".Config.Exhaustion.BaseFactor", GetDefaultExhaustionBaseFactor())
+        EndFunction
+        Function SetExhaustionBaseFactor(float value) global
+            SetFloatValue(".Config.Exhaustion.BaseFactor", value)
+        EndFunction
+    ; Sleep Recovery Rate
+        float Function GetDefaultExhaustionSleepRecoveryRate() global
+            return 2.5
+        EndFunction
+        float Function GetExhaustionSleepRecoveryRate() global
+            return GetFloatValue(".Config.Exhaustion.SleepRecoveryRate", GetDefaultExhaustionSleepRecoveryRate())
+        EndFunction
+        Function SetExhaustionSleepRecoveryRate(float value) global
+            SetFloatValue(".Config.Exhaustion.SleepRecoveryRate", value)
+        EndFunction
+
 ; Utility
     ; Getters
         bool Function GetBoolValue(string path, bool default) global

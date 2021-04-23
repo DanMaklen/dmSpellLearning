@@ -27,10 +27,10 @@ Function NotifyLearnedNewSpell(Spell spellLearned)
     UISpellLearnedSound.Play(PlayerRef)
 EndFunction
 Function NotifyProgress(Spell spellLearned, float progress, float progressDelta)
-    Debug.Notification("Learning spell: " + spellLearned.GetName() + ". Progress: " + dmSL_Utils.FloatToPercentage(progress) + " (+" + dmSL_Utils.FloatToPercentage(progressDelta) + ")")
+    Debug.Notification("Learning spell: " + spellLearned.GetName() + ". Progress: " + dm_Utils.FloatToPercentage(progress) + " (+" + dm_Utils.FloatToPercentage(progressDelta) + ")")
 EndFunction
 Function NotifyCooldown(float remCooldown)
-    Debug.Notification("Cannot study for " + dmSL_Utils.FloatToString(remCooldown) + " more hours.")
+    Debug.Notification("Cannot study for " + dm_Utils.FloatToString(remCooldown) + " more hours.")
 EndFunction
 
 ; Study Condition Not Met

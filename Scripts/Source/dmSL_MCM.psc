@@ -34,72 +34,76 @@ EndEvent
 ; Page 1: Config
 	Function SetupPage_Config()
 		SetCursorFillMode(TOP_TO_BOTTOM)
-		AddHeaderOption("Basic Configuration")
-		AddToggleOptionST("ConsumeTomeOnLearn", "Consume Spell Tome on Learn", dmSL_Config.GetConsumeTomeOnLearn())
-		AddSliderOptionST("BaseLearnRate", "Base Learning Rate", dmSL_Config.GetBaseLearnRate(), "{2}")
-		AddSliderOptionST("CooldownFactor", "Cooldown Factor", dmSL_Config.GetCooldownFactor(), "{2}")
+		AddBasicConfiguration()
 		AddStudySessionConditions()
+		AddExhaustion()
 	EndFunction
 
-	State ConsumeTomeOnLearn
-		Event OnSetToggleValue(bool newValue)
-			dmSL_Config.SetConsumeTomeOnLearn(newValue)
-			SetToggleOptionValueST(newValue)
-		EndEvent
-		Event OnSelectST()
-			OnSetToggleValue(!dmSL_Config.GetConsumeTomeOnLearn())
-		EndEvent
-		Event OnHighlightST()
-			string infoText = "If enabled, Spell Tome will be consumed when the spell is learned succesfully."
-			SetInfoTextWithDefaultToggle(infoText, dmSL_Config.GetDefaultConsumeTomeOnLearn())
-		EndEvent
-		Event OnDefaultST()
-			OnSetToggleValue(dmSL_Config.GetDefaultConsumeTomeOnLearn())
-		EndEvent
-	EndState
-	State BaseLearnRate
-		Event OnSliderOpenST()
-			SetSliderDialogStartValue(dmSL_Config.GetBaseLearnRate())
-			SetSliderDialogDefaultValue(dmSL_Config.GetDefaultBaseLearnRate())
-			SetSliderDialogRange(0.01, 1.0)
-			SetSliderDialogInterval(0.01)
-		EndEvent
-		Event OnSliderAcceptST(float val)
-			dmSL_Config.SetBaseLearnRate(val)
-			SetSliderOptionValueST(val, "{2}")
-		EndEvent
-		Event OnHighlightST()
-			string infoText = \
-				"Controls the base progress done per hour to learn a new spell before any modifiers are applied.\n" + \
-				"The higher amount the faster spell is learned."
-			SetInfoTextWithDefaultFloat(infoText, dmSL_Config.GetDefaultBaseLearnRate())
-		EndEvent
-		Event OnDefaultST()
-			OnSliderAcceptST(dmSL_Config.GetDefaultBaseLearnRate())
-		EndEvent
-	EndState
-	State CooldownFactor
-		Event OnSliderOpenST()
-			SetSliderDialogStartValue(dmSL_Config.GetCooldownFactor())
-			SetSliderDialogDefaultValue(dmSL_Config.GetDefaultCooldownFactor())
-			SetSliderDialogRange(0.25, 5.0)
-			SetSliderDialogInterval(0.25)
-		EndEvent
-		Event OnSliderAcceptST(float val)
-			dmSL_Config.SetCooldownFactor(val)
-			SetSliderOptionValueST(val, "{2}")
-		EndEvent
-		Event OnHighlightST()
-			string infoText = \
-				"Controls the base cooldown between study sessions.\n" + \
-				"The higher values the longer the cooldown will be."
-			SetInfoTextWithDefaultFloat(infoText, dmSL_Config.GetDefaultCooldownFactor())
-		EndEvent
-		Event OnDefaultST()
-			OnSliderAcceptST(dmSL_Config.GetDefaultCooldownFactor())
-		EndEvent
-	EndState
-
+	; Basic Config
+		Function AddBasicConfiguration()
+			AddHeaderOption("Basic Configuration")
+			AddToggleOptionST("ConsumeTomeOnLearn", "Consume Spell Tome on Learn", dmSL_Config.GetConsumeTomeOnLearn())
+			AddSliderOptionST("BaseLearnRate", "Base Learning Rate", dmSL_Config.GetBaseLearnRate(), "{2}")
+			AddSliderOptionST("CooldownFactor", "Cooldown Factor", dmSL_Config.GetCooldownBaseFactor(), "{2}")
+		EndFunction
+		State ConsumeTomeOnLearn
+			Event OnSetToggleValue(bool newValue)
+				dmSL_Config.SetConsumeTomeOnLearn(newValue)
+				SetToggleOptionValueST(newValue)
+			EndEvent
+			Event OnSelectST()
+				OnSetToggleValue(!dmSL_Config.GetConsumeTomeOnLearn())
+			EndEvent
+			Event OnHighlightST()
+				string infoText = "If enabled, Spell Tome will be consumed when the spell is learned succesfully."
+				SetInfoTextWithDefaultToggle(infoText, dmSL_Config.GetDefaultConsumeTomeOnLearn())
+			EndEvent
+			Event OnDefaultST()
+				OnSetToggleValue(dmSL_Config.GetDefaultConsumeTomeOnLearn())
+			EndEvent
+		EndState
+		State BaseLearnRate
+			Event OnSliderOpenST()
+				SetSliderDialogStartValue(dmSL_Config.GetBaseLearnRate())
+				SetSliderDialogDefaultValue(dmSL_Config.GetDefaultBaseLearnRate())
+				SetSliderDialogRange(0.01, 1.0)
+				SetSliderDialogInterval(0.01)
+			EndEvent
+			Event OnSliderAcceptST(float val)
+				dmSL_Config.SetBaseLearnRate(val)
+				SetSliderOptionValueST(val, "{2}")
+			EndEvent
+			Event OnHighlightST()
+				string infoText = \
+					"Controls the base progress done per hour to learn a new spell before any modifiers are applied.\n" + \
+					"The higher amount the faster spell is learned."
+				SetInfoTextWithDefaultFloat(infoText, dmSL_Config.GetDefaultBaseLearnRate())
+			EndEvent
+			Event OnDefaultST()
+				OnSliderAcceptST(dmSL_Config.GetDefaultBaseLearnRate())
+			EndEvent
+		EndState
+		State CooldownFactor
+			Event OnSliderOpenST()
+				SetSliderDialogStartValue(dmSL_Config.GetCooldownBaseFactor())
+				SetSliderDialogDefaultValue(dmSL_Config.GetDefaultCooldownBaseFactor())
+				SetSliderDialogRange(0.25, 5.0)
+				SetSliderDialogInterval(0.25)
+			EndEvent
+			Event OnSliderAcceptST(float val)
+				dmSL_Config.SetCooldownBaseFactor(val)
+				SetSliderOptionValueST(val, "{2}")
+			EndEvent
+			Event OnHighlightST()
+				string infoText = \
+					"Controls the base cooldown between study sessions.\n" + \
+					"The higher values the longer the cooldown will be."
+				SetInfoTextWithDefaultFloat(infoText, dmSL_Config.GetDefaultCooldownBaseFactor())
+			EndEvent
+			Event OnDefaultST()
+				OnSliderAcceptST(dmSL_Config.GetDefaultCooldownBaseFactor())
+			EndEvent
+		EndState
 	; Study Session Conditions
 		Function AddStudySessionConditions()
 			AddHeaderOption("Study Session Conditions")
@@ -187,6 +191,51 @@ EndEvent
 				OnSetToggleValue(!dmSL_Config.GetDefaultStudyConditionsAllowShelfStudying())
 			EndEvent
 		EndState
+
+	; Exhaustion
+		Function AddExhaustion()
+			AddHeaderOption("Exhaustion")
+			AddSliderOptionST("ExhaustionBaseFactor", "Base Factor", dmSL_Config.GetExhaustionBaseFactor(), "{2}")
+			AddSliderOptionST("ExhaustionSleepRecoveryRate", "Sleep Recovery Rate", dmSL_Config.GetExhaustionBaseFactor(), "{2}")
+		EndFunction
+		State ExhaustionBaseFactor
+			Event OnSliderOpenST()
+				SetSliderDialogStartValue(dmSL_Config.GetExhaustionBaseFactor())
+				SetSliderDialogDefaultValue(dmSL_Config.GetDefaultExhaustionBaseFactor())
+				SetSliderDialogRange(0.25, 5.0)
+				SetSliderDialogInterval(0.25)
+			EndEvent
+			Event OnSliderAcceptST(float val)
+				dmSL_Config.SetExhaustionBaseFactor(val)
+				SetSliderOptionValueST(val, "{2}")
+			EndEvent
+			Event OnHighlightST()
+				string infoText = "Controls how much you get exhausted from studying."
+				SetInfoTextWithDefaultFloat(infoText, dmSL_Config.GetDefaultExhaustionBaseFactor())
+			EndEvent
+			Event OnDefaultST()
+				OnSliderAcceptST(dmSL_Config.GetDefaultExhaustionBaseFactor())
+			EndEvent
+		EndState
+		State ExhaustionSleepRecoveryRate
+			Event OnSliderOpenST()
+				SetSliderDialogStartValue(dmSL_Config.GetExhaustionSleepRecoveryRate())
+				SetSliderDialogDefaultValue(dmSL_Config.GetDefaultExhaustionSleepRecoveryRate())
+				SetSliderDialogRange(0.25, 5.0)
+				SetSliderDialogInterval(0.25)
+			EndEvent
+			Event OnSliderAcceptST(float val)
+				dmSL_Config.SetExhaustionSleepRecoveryRate(val)
+				SetSliderOptionValueST(val, "{2}")
+			EndEvent
+			Event OnHighlightST()
+				string infoText = "Controls how fast you recover from your exhaustion while sleeping."
+				SetInfoTextWithDefaultFloat(infoText, dmSL_Config.GetDefaultExhaustionSleepRecoveryRate())
+			EndEvent
+			Event OnDefaultST()
+				OnSliderAcceptST(dmSL_Config.GetDefaultExhaustionSleepRecoveryRate())
+			EndEvent
+		EndState
 ; Page 2: Progress Status
 	Function SetupPage_StudyProgress()
 		int count = StateRef.ProgressState_KeyCount()
@@ -195,7 +244,7 @@ EndEvent
 		Spell spellLearned = StateRef.ProgressSate_FirstKey()
 		While (spellLearned)
 			float progress = StateRef.ProgressState_GetProgress(spellLearned)
-			string progressString = dmSL_Utils.FloatToPercentage(progress)
+			string progressString = dm_Utils.FloatToPercentage(progress)
 			AddTextOption(spellLearned.GetName(), progressString, OPTION_FLAG_DISABLED)
 			spellLearned = StateRef.ProgressState_NextKey(spellLearned)
 		EndWhile	
@@ -372,7 +421,7 @@ EndEvent
 			EndIf
 			i += 1
 		EndWhile
-		AddTextOption("Known Spells", knownCount + "/" + list.Length + " (" + dmSL_Utils.FloatToPercentage(knownCount as float / list.length as float) + ")", OPTION_FLAG_DISABLED)
+		AddTextOption("Known Spells", knownCount + "/" + list.Length + " (" + dm_Utils.FloatToPercentage(knownCount as float / list.length as float) + ")", OPTION_FLAG_DISABLED)
 	EndFunction
 
 	Function UpdateFormList()
@@ -425,7 +474,7 @@ EndEvent
 		SetInfoText(info + "\n(Default: " + defaultVal + ")")
 	EndFunction
 	Function SetInfoTextWithDefaultFloat(string info, float defaultVal)
-		SetInfoTextWithDefaultString(info, dmSL_Utils.FloatToString(defaultVal))
+		SetInfoTextWithDefaultString(info, dm_Utils.FloatToString(defaultVal))
 	EndFunction
 	Function SetInfoTextWithDefaultInt(string info, int defaultVal)
 		SetInfoTextWithDefaultString(info, defaultVal)

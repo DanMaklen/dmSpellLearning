@@ -5,9 +5,12 @@ Scriptname dmSL_SpellLearning extends ReferenceAlias
 dmSL_State Property StateRef Auto
 dmSL_UX Property UXRef Auto
 
+; Player Attributes
+dm_BasePlayerAttribute Property CooldownMult Auto
+dm_BasePlayerAttribute Property Exhaustion Auto
+
 ; Auto Set Properties
 Actor Property PlayerRef Auto
-GlobalVariable Property GameHour auto
 
 Auto State Idle
     Event OnBeginState()
@@ -96,6 +99,13 @@ State Studying
     EndEvent
     Event OnEndState()
         UXRef.EndStudyAnimation()
+
+        Spell spellLearned = StateRef.StudySession_GetSpellLearned()
+        float sessionDuration = StateRef.StudySession_GetDuration()
+        float proficiency = CalculateSpellProficiency(spellLearned)
+        float exhaustionIncrease = sessionDuration * dmSL_Config.GetExhaustionBaseFactor() * (1 + proficiency)
+
+        Exhaustion.Mod(exhaustionIncrease)
     EndEvent
 EndState
 
@@ -128,21 +138,35 @@ State Cooldown
 
         Spell spellLearned = StateRef.StudySession_GetSpellLearned()
         float sessionDuration = StateRef.StudySession_GetDuration()
-        
-        float cooldown = sessionDuration * dmSL_Config.GetCooldownFactor()
-        StateRef.StudySession_SetCooldownEndAt(GameHour.GetValue() + cooldown)
+
+        float cooldown = sessionDuration * dmSL_Config.GetCooldownBaseFactor() * CooldownMult.GetValue()
+        cooldown = PapyrusUtil.ClampFloat(cooldown, 1.0, 48.0)
+        StateRef.StudySession_SetCooldownEndAt(dm_Utils.GetGameTimeInHours() + cooldown)
         
         RegisterForSingleUpdateGameTime(cooldown)
     EndEvent
     Event OnSpellTomeRead(Book spellBook, Spell spellLearned, ObjectReference bookContainer)
         float cooldownEndAt = StateRef.StudySession_GetCooldownEndAt()
-        float remCooldown = dmSL_Utils.MaxFloat(0, cooldownEndAt - GameHour.GetValue())
+        float remCooldown = dm_Utils.MaxFloat(0, cooldownEndAt - dm_Utils.GetGameTimeInHours())
         UXRef.NotifyCooldown(remCooldown)
     EndEvent
     Event OnUpdateGameTime()
         GoToState("Idle")
     EndEvent
 EndState
+
+; Sleep Events
+float recovery
+Event OnSleepStart(float startTime, float endTime)
+    float sleepDuration = endTime - startTime
+    recovery = sleepDuration * 24 * dmSL_Config.GetExhaustionSleepRecoveryRate()
+EndEvent
+Event OnSleepStop(bool isInterrupted)
+    If (!isInterrupted)
+        Exhaustion.Mod(-recovery)
+    EndIf
+    recovery = 0.0
+EndEvent
 
 ; Calculations
 float Function GetStudySessionDuration(Spell spellLearned)
@@ -152,30 +176,31 @@ float Function GetStudySessionDuration(Spell spellLearned)
     return UXRef.ShowStudyDurationInputPrompt(estimatedTimeToLearn)
 EndFunction
 float Function CalculateLearnRate(Spell spellLearned)
-    return dmSL_Config.GetBaseLearnRate() * (1 + CalculateProficiency(spellLearned))
+    return dmSL_Config.GetBaseLearnRate() * (1 + CalculateSpellProficiency(spellLearned))
 EndFunction
-float Function CalculateProficiency(Spell spellLearned)
+float Function CalculateSpellProficiency(Spell spellLearned)
     float proficiencyMod = 0.0
     MagicEffect[] effectList = spellLearned.GetMagicEffects()
     int i = 0
     While (i < effectList.Length)
-        MagicEffect effect = effectList[i]
-        proficiencyMod += CalculateSchoolProficiency(effect.GetAssociatedSkill(), effect.GetSkillLevel()) / effectList.Length
+        proficiencyMod += CalculateMagicEffectProficiency(effectList[i]) / effectList.Length
         i += 1
     EndWhile
     return proficiencyMod
 EndFunction
-float Function CalculateSchoolProficiency(string School, int spellComplexity)
-    return (PlayerRef.GetAV(school) - spellComplexity) / 100
+float Function CalculateMagicEffectProficiency(MagicEffect effect)
+    return (PlayerRef.GetAV(effect.GetAssociatedSkill()) - effect.GetSkillLevel()) / 100
 EndFunction
 
 ; Setup
 Function RegisterEvent()
     DEST_ReferenceAliasExt.RegisterForSpellTomeReadEvent(self)
+    RegisterForSleep()
 EndFunction
 Function UnregisterEvent()
     DEST_ReferenceAliasExt.UnregisterForSpellTomeReadEvent(self)
     UnregisterForUpdateGameTime()
+    UnregisterForSleep()
 EndFunction
 
 ; Empty State
