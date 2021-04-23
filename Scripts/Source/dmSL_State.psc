@@ -34,8 +34,14 @@ EndFunction
                 JFormMap.removeKey(self.progressState, spellLearned)
             EndIf
         EndFunction
+        bool Function ProgressState_HasSpellEntry(Spell spellLearned)
+            return JFormMap.hasKey(self.progressState, spellLearned)
+        EndFunction
 
         float Function ProgressState_GetProgress(Spell spellLearned)
+            If (!ProgressState_HasSpellEntry(spellLearned))
+                return 0.0
+            EndIf
             return JValue.solveFlt(ProgressState_GetSpellEntry(spellLearned), ".Progress", 0.0)
         EndFunction
         Function ProgressState_SetProgress(Spell spellLearned, float progress)

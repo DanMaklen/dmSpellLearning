@@ -1,4 +1,4 @@
-Scriptname dmSL_Utils Hidden
+Scriptname dm_Utils Hidden
 {Some utility functions used through out the code}
 
 ; Transforms float to string with with certain precision

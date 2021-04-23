@@ -2,27 +2,33 @@
 This is a Skyrim Mod. It's a personal take on how I invision learning new spells should have been.
 
 ## Features
-- Learn Spells Gradually
-- Learning rate scales with School Proficiency and Spell Complexity
-- Auto detect learned spells on tome read
-- No compatbility patch required
-- Variable study session duration
+- Learn spells gradually through study sessions
+- Almost all variables are configurable in the MCM
+- MCM Checklist for learning all spells (wil Spell Tome) in the game
+- No compatbility patch required for mods adding new spell tomes
+- Does not touch any spell tome or spell records. So should be compatible with any mods that alter those records.
+
+## Mechanics
+### Study Session
+If you have a book, you can study it. Go have a sit somewhere and start a study session.
+- For immersion, you cannot study in various conditions like combat.
+- The effeciency of the study session scales with the complexity of the spell and your profiecency in it's school.
+- You can study multiple spells in parralel, but only one per study session.
+- There is a cooldown between sessions. (min 1 hour, max. 48 hours)
+
+### Exhaustion
+If you have just finished a study session, you must rest a bit.
+- The exhaustion parameter scales with:
+  - *Session duration*: Longer sessions leads to more exhaustion.
+  - *Spell complexity*: More complex spells leads to more exhaustion.
+  - *School Proficency*: More proficency in the spell's school leads to less exhaustion.
+- Sleeping reduces portion of the accumlated exhaustion.
 
 ## Ideas & Future Improvements
-- **[WIP]** Study Duration Animation
-- MCM
-- Mod Versioning
 - Tome loss:
     - Learning in Water Chance
     - Random chance during study session
-        - Scale with session duration
-- Block learning when:
-    - Swimming
-    - In Combat
-    - IsTrespassing
-    - Outdoors (configurable)
-    - Recovery period between study sessions (configurable)
-    - Must sleep between study sessions (configurable)
+    - Scale with session duration
 - Focus Mechanic:
     - More focus while sitting
     - More focus when rested
@@ -36,7 +42,6 @@ This is a Skyrim Mod. It's a personal take on how I invision learning new spells
         - College of winterhoold give major focus boost
         - Libraries give major focus boost
         - Loose focus in city outdoors
-        - Focus debuf since last study session
     - Loose focus with surrounding actor count
     - More focus during morning/night time (Configurable)
 - Race Based Buff
