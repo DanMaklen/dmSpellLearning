@@ -34,3 +34,7 @@ float Function MaxFloat(float a, float b) global
     EndIf
     return b
 EndFunction
+
+float Function GetGameTimeInHours() global
+    return Utility.GetCurrentGameTime() * 24
+EndFunction

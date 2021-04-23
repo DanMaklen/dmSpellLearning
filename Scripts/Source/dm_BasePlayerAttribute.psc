@@ -17,5 +17,4 @@ Function Mod(float val)
 EndFunction
 
 Event OnValueChanged(float newVal)
-    Debug.Notification("Yaaay2: " + newVal)
 EndEvent
