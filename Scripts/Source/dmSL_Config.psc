@@ -22,7 +22,7 @@ Scriptname dmSL_Config Hidden
         Function SetConsumeTomeOnLearn(bool value) global
             SetBoolValue(".Config.ConsumeTomeOnLearn", value)
         EndFunction
-    ; Cooldown BaseFactor
+    ; Cooldown Base Factor
         float Function GetDefaultCooldownBaseFactor() global
             return 1.5
         EndFunction
@@ -84,7 +84,7 @@ Scriptname dmSL_Config Hidden
             SetBoolValue(".Config.StudyConditions.AllowShelfStudying", value)
         EndFunction
 ; Exhaustion
-    ; Exhaustion BaseFactor
+    ; Exhaustion Base Factor
         float Function GetDefaultExhaustionBaseFactor() global
             return 2.5
         EndFunction

@@ -10,7 +10,7 @@ This is a Skyrim Mod. It's a personal take on how I invision learning new spells
 
 ## Mechanics
 ### Study Session
-If you have a book, you can study it. Go have a sit somewhere and start a study session.
+If you have a book, you can study it. Go have a seat somewhere and start a study session.
 - For immersion, you cannot study in various conditions like combat.
 - The effeciency of the study session scales with the complexity of the spell and your profiecency in it's school.
 - You can study multiple spells in parralel, but only one per study session.
@@ -23,6 +23,8 @@ If you have just finished a study session, you must rest a bit.
   - *Spell complexity*: More complex spells leads to more exhaustion.
   - *School Proficency*: More proficency in the spell's school leads to less exhaustion.
 - Sleeping reduces portion of the accumlated exhaustion.
+- Increased exhausion can give various debuffs:
+  - Increased study cooldown
 
 ## Ideas & Future Improvements
 - Tome loss:

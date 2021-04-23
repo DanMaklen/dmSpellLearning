@@ -140,6 +140,7 @@ State Cooldown
         float sessionDuration = StateRef.StudySession_GetDuration()
 
         float cooldown = sessionDuration * dmSL_Config.GetCooldownBaseFactor() * CooldownMult.GetValue()
+        cooldown = PapyrusUtil.ClampFloat(cooldown, 1.0, 48.0)
         StateRef.StudySession_SetCooldownEndAt(dm_Utils.GetGameTimeInHours() + cooldown)
         
         RegisterForSingleUpdateGameTime(cooldown)
