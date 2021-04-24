@@ -12,16 +12,6 @@ Scriptname dmSL_Config Hidden
         Function SetBaseLearnRate(float value) global
             SetFloatValue(".Config.BaseLearnRate", value)
         EndFunction
-    ; Consume Tome on Learn
-        bool Function GetDefaultConsumeTomeOnLearn() global
-            return true
-        EndFunction
-        bool Function GetConsumeTomeOnLearn() global
-            return GetBoolValue(".Config.ConsumeTomeOnLearn", GetDefaultConsumeTomeOnLearn())
-        EndFunction
-        Function SetConsumeTomeOnLearn(bool value) global
-            SetBoolValue(".Config.ConsumeTomeOnLearn", value)
-        EndFunction
     ; Cooldown Base Factor
         float Function GetDefaultCooldownBaseFactor() global
             return 1.5
@@ -104,7 +94,27 @@ Scriptname dmSL_Config Hidden
         Function SetExhaustionSleepRecoveryRate(float value) global
             SetFloatValue(".Config.Exhaustion.SleepRecoveryRate", value)
         EndFunction
-
+; Spell Tome Loss
+    ; On Learn
+        bool Function GetDefaultSpellTomeLossOnLearn() global
+            return true
+        EndFunction
+        bool Function GetSpellTomeLossOnLearn() global
+            return GetBoolValue(".Config.SpellTomeLossOnLearn", GetDefaultSpellTomeLossOnLearn())
+        EndFunction
+        Function SetSpellTomeLossOnLearn(bool value) global
+            SetBoolValue(".Config.SpellTomeLossOnLearn", value)
+        EndFunction
+    ; Loss Rate
+        float Function GetDefaultSpellTomeLossRate() global
+            return 0.0125
+        EndFunction
+        float Function GetSpellTomeLossRate() global
+            return GetFloatValue(".Config.SpellTomeLossRate", GetDefaultSpellTomeLossRate())
+        EndFunction
+        Function SetSpellTomeLossRate(float value) global
+            SetFloatValue(".Config.SpellTomeLossRate", value)
+        EndFunction
 ; Utility
     ; Getters
         bool Function GetBoolValue(string path, bool default) global
