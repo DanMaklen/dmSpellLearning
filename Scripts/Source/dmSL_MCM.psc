@@ -270,24 +270,33 @@ EndEvent
 	Function SetupPage_StudyStudySessionStats()
 		AddStudyStats()
 		AddLastSessionInfo()
+		AddStatistics()
 		AddProgressReport()
 	EndFunction
 	Function AddStudyStats()
-		AddHeaderOption("Study Stats:")
+		AddHeaderOption("Study Stats")
 		float remCooldown = StateRef.StudySession_GetCooldownEndAt() - dm_Utils.GetGameTimeInHours()
 		string cooldownStatus = "Ready!"
 		If (remCooldown > 0.0)
 			cooldownStatus = Math.Ceiling(remCooldown) + " Hours"
 		EndIf
-		AddTextOption("Cooldown:", cooldownStatus, OPTION_FLAG_DISABLED)
+		AddTextOption("Cooldown", cooldownStatus, OPTION_FLAG_DISABLED)
 		AddTextOption("Exhaustion", dm_Utils.FloatToString(Exhaustion.GetValue()), OPTION_FLAG_DISABLED)
 		AddTextOption("Cooldown Multiplier", dm_Utils.FloatToString(CooldownMult.GetValue()), OPTION_FLAG_DISABLED)
 	EndFunction
 	Function AddLastSessionInfo()
-		AddHeaderOption("Last Study Session Stats:")
+		AddHeaderOption("Last Study Session Stats")
 		AddHeaderOption("")
 		AddTextOption("Spell Studied", StateRef.StudySession_GetSpellLearned().GetName(), OPTION_FLAG_DISABLED)
 		AddTextOption("Session Duration", Math.Ceiling(StateRef.StudySession_GetDuration()) + " Hours", OPTION_FLAG_DISABLED)
+	EndFunction
+	Function AddStatistics()
+		AddHeaderOption("Statistics")
+		AddHeaderOption("")
+		AddTextOption("# of Completed Study Sessions", StateRef.StudySessionStats_GetCompletedSessionCount(), OPTION_FLAG_DISABLED)
+		AddTextOption("Spells Learned Through Studying", StateRef.StudySessionStats_GetSpellsLearned(), OPTION_FLAG_DISABLED)
+		AddTextOption("Hours Spent Studying", Math.Floor(StateRef.StudySessionStats_GetHoursStudying()) + " Hours", OPTION_FLAG_DISABLED)
+		AddEmptyOption()
 	EndFunction
 	Function AddProgressReport()
 		int count = StateRef.ProgressState_KeyCount()

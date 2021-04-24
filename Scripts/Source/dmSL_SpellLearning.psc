@@ -94,8 +94,12 @@ State Studying
     EndEvent
     Event OnEndState()
         UXRef.EndStudyAnimation()
+
         Spell spellLearned = StateRef.StudySession_GetSpellLearned()
         float sessionDuration = StateRef.StudySession_GetDuration()
+
+        StateRef.StudySessionStats_ModCompletedSessionCount(1)
+        StateRef.StudySessionStats_ModHoursStudying(sessionDuration)
 
         float proficiency = CalculateSpellProficiency(spellLearned)
         float exhaustionIncrease = sessionDuration * dmSL_Config.GetExhaustionBaseFactor() * (1 + proficiency)
@@ -120,6 +124,7 @@ State LearnSpell
 
         PlayerRef.AddSpell(spellLearned, false)
         StateRef.ProgressState_RemoveSpellEntry(spellLearned)
+        StateRef.StudySessionStats_ModSpellsLearned(1)
         UXRef.NotifyLearnedNewSpell(spellLearned)
 
         If (!didLoseSpellTome && dmSL_Config.GetSpellTomeLossOnLearn())

@@ -48,7 +48,7 @@ EndFunction
 
 ; User Input
 float Function ShowStudyDurationInputPrompt(float estimatedTimeToLearn)
-    int btnHit = dmSL_StudySessionDurationPrompt.Show(estimatedTimeToLearn)
+    int btnHit = dmSL_StudySessionDurationPrompt.Show(Math.Ceiling(estimatedTimeToLearn))
     If (btnHit == 0)
         Return 0.0
     EndIf
