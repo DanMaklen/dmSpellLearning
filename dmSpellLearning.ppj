@@ -1,0 +1,42 @@
+<?xml version='1.0'?><!-- Game is either sse, tesv, or fo4 -->
+<PapyrusProject xmlns="PapyrusProject.xsd" 
+    Flags="TESV_Papyrus_Flags.flg" 
+    Game="sse" 
+    Output="Scripts" 
+    Optimize="false" 
+    Release="false" 
+    Final="false"
+    Anonymize="false"
+    Package="false"
+    Zip="false">
+    <Variables>
+        <Variable Name="modName" Value="dmSpellLearning"/>
+        <Variable Name="gamePath" Value="C:\Program Files (x86)\Steam\steamapps\common\Skyrim Special Edition"/>
+        <Variable Name="deployPath" Value="C:\Users\DanMaklen\AppData\Roaming\Vortex\skyrimse\mods\DevMod"/>
+    </Variables>
+    <Imports>
+        <Import>.\Scripts\Source\</Import>
+        <Import>@gamePath\Data\Scripts\Source</Import>
+        <Import>@gamePath\Data\Source\Scripts</Import>
+    </Imports>
+    <Folders>
+        <Folder>.\Scripts\Source\</Folder>
+    </Folders>
+    <Packages Output=".">
+        <Package Name="@modName.bsa" RootDir=".">
+            <Include NoRecurse="false">**/*.pex</Include>
+        </Package>
+    </Packages>
+    <ZipFiles Output=".">
+        <ZipFile Name="@modName" RootDir="." Compression="deflate">
+            <Include>@modName.esp</Include>
+            <Include>*.bsa</Include>
+        </ZipFile>
+    </ZipFiles>
+    <PreBuildEvent Description="" UseInBuild="true">
+        <Command>xcopy /Q /E /Y /D @gamePath/Data/@modName.esp .</Command>
+    </PreBuildEvent>
+    <PostBuildEvent Description="" UseInBuild="true">
+        <Command>xcopy /Q /E /Y /D . @deployPath</Command>
+    </PostBuildEvent >
+</PapyrusProject>
