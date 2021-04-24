@@ -155,7 +155,7 @@ EndEvent
 				SetInfoTextWithDefaultToggle("If enabled, you can study outdoors.", dmSL_Config.GetDefaultStudyConditionsAllowOutdoor())
 			EndEvent
 			Event OnDefaultST()
-				OnSetToggleValue(!dmSL_Config.GetDefaultStudyConditionsAllowOutdoor())
+				OnSetToggleValue(dmSL_Config.GetDefaultStudyConditionsAllowOutdoor())
 			EndEvent
 		EndState
 		State StudyConditionsAllowTresspassing
@@ -170,7 +170,7 @@ EndEvent
 				SetInfoTextWithDefaultToggle("If enabled, you can study while tresspassing.", dmSL_Config.GetDefaultStudyConditionsAllowTresspassing())
 			EndEvent
 			Event OnDefaultST()
-				OnSetToggleValue(!dmSL_Config.GetDefaultStudyConditionsAllowTresspassing())
+				OnSetToggleValue(dmSL_Config.GetDefaultStudyConditionsAllowTresspassing())
 			EndEvent
 		EndState
 		State StudyConditionsAllowSneaking
@@ -185,7 +185,7 @@ EndEvent
 				SetInfoTextWithDefaultToggle("If enabled, You can study while sneaking.", dmSL_Config.GetDefaultStudyConditionsAllowSneaking())
 			EndEvent
 			Event OnDefaultST()
-				OnSetToggleValue(!dmSL_Config.GetDefaultStudyConditionsAllowSneaking())
+				OnSetToggleValue(dmSL_Config.GetDefaultStudyConditionsAllowSneaking())
 			EndEvent
 		EndState
 		State StudyConditionsLimitToSitting
@@ -200,7 +200,7 @@ EndEvent
 				SetInfoTextWithDefaultToggle("If enabled, you can only study while sitting.", dmSL_Config.GetDefaultStudyConditionsLimitToSitting())
 			EndEvent
 			Event OnDefaultST()
-				OnSetToggleValue(!dmSL_Config.GetDefaultStudyConditionsLimitToSitting())
+				OnSetToggleValue(dmSL_Config.GetDefaultStudyConditionsLimitToSitting())
 			EndEvent
 		EndState
 		State StudyConditionsAllowShelfStudying
@@ -218,7 +218,7 @@ EndEvent
 				SetInfoTextWithDefaultToggle(infoText, dmSL_Config.GetDefaultStudyConditionsAllowShelfStudying())
 			EndEvent
 			Event OnDefaultST()
-				OnSetToggleValue(!dmSL_Config.GetDefaultStudyConditionsAllowShelfStudying())
+				OnSetToggleValue(dmSL_Config.GetDefaultStudyConditionsAllowShelfStudying())
 			EndEvent
 		EndState
 
