@@ -4,7 +4,7 @@ Scriptname dmSL_Config Hidden
 ; Study Session
     ; Base Learn Rate
         float Function GetDefaultBaseLearnRate() global
-            return 0.10
+            return 0.0625
         EndFunction
         float Function GetBaseLearnRate() global
             return GetFloatValue(".Config.BaseLearnRate", GetDefaultBaseLearnRate())
