@@ -15,11 +15,6 @@ Actor Property PlayerRef Auto
 Auto State Idle
     Event OnBeginState()
         StateRef.StudySession_SetState(StateRef.StudySessionState_Idle)
-        StateRef.StudySession_SetSpellLearned(none)
-        StateRef.StudySession_SetSpellTome(none)
-        StateRef.StudySession_SetSpellTomeContainer(none)
-        StateRef.StudySession_SetDuration(0.0)
-        StateRef.StudySession_SetCooldownEndAt(0.0)
     EndEvent
     Event OnSpellTomeRead(Book spellTome, Spell spellLearned, ObjectReference spellTomeContainer)
         If (!spellTomeContainer)
