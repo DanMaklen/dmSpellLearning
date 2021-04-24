@@ -127,7 +127,7 @@ EndEvent
 			Event OnHighlightST()
 				string infoText = \
 					"Controls the chance of loosing the spell tome during study.\n" + \
-					"Note: This is scales (linearly) with the session duration. For example, 1.25% leads to approximatly 10% for an 8 hour session."
+					"Note: This is scales (linearly) with the session duration. For example, 1.25% leads to approximatly 10% for 8 hours sessions."
 				SetInfoTextWithDefaultPercent(infoText, dmSL_Config.GetDefaultSpellTomeLossRate())
 			EndEvent
 			Event OnDefaultST()
@@ -141,7 +141,7 @@ EndEvent
 			AddToggleOptionST("StudyConditionsAllowTresspassing", "Allow While Tresspassing", dmSL_Config.GetStudyConditionsAllowTresspassing())
 			AddToggleOptionST("StudyConditionsAllowSneaking", "Allow While Sneaking", dmSL_Config.GetStudyConditionsAllowSneaking())
 			AddToggleOptionST("StudyConditionsLimitToSitting", "Limit To Sitting", dmSL_Config.GetStudyConditionsLimitToSitting())
-			AddToggleOptionST("StudyConditionsAllowShelfStudying", "Allow Shelf Studying", dmSL_Config.GetStudyConditionsAllowShelfStudying())
+			AddToggleOptionST("StudyConditionsAllowShelfStudying", "Allow Skim Studying", dmSL_Config.GetStudyConditionsAllowShelfStudying())
 		EndFunction
 		State StudyConditionsAllowOutdoor
 			Event OnSetToggleValue(bool newValue)
@@ -278,7 +278,7 @@ EndEvent
 		float remCooldown = StateRef.StudySession_GetCooldownEndAt() - dm_Utils.GetGameTimeInHours()
 		string cooldownStatus = "Ready!"
 		If (remCooldown > 0.0)
-			cooldownStatus = Math.Ceiling(remCooldown) + " Hours"
+			cooldownStatus = dm_Utils.FloatToHours(remCooldown)
 		EndIf
 		AddTextOption("Cooldown", cooldownStatus, OPTION_FLAG_DISABLED)
 		AddTextOption("Exhaustion", dm_Utils.FloatToString(Exhaustion.GetValue()), OPTION_FLAG_DISABLED)
@@ -288,14 +288,14 @@ EndEvent
 		AddHeaderOption("Last Study Session Stats")
 		AddHeaderOption("")
 		AddTextOption("Spell Studied", StateRef.StudySession_GetSpellLearned().GetName(), OPTION_FLAG_DISABLED)
-		AddTextOption("Session Duration", Math.Ceiling(StateRef.StudySession_GetDuration()) + " Hours", OPTION_FLAG_DISABLED)
+		AddTextOption("Session Duration", dm_Utils.FloatToHours(StateRef.StudySession_GetDuration()), OPTION_FLAG_DISABLED)
 	EndFunction
 	Function AddStatistics()
 		AddHeaderOption("Statistics")
 		AddHeaderOption("")
 		AddTextOption("# of Completed Study Sessions", StateRef.StudySessionStats_GetCompletedSessionCount(), OPTION_FLAG_DISABLED)
 		AddTextOption("Spells Learned Through Studying", StateRef.StudySessionStats_GetSpellsLearned(), OPTION_FLAG_DISABLED)
-		AddTextOption("Hours Spent Studying", Math.Floor(StateRef.StudySessionStats_GetHoursStudying()) + " Hours", OPTION_FLAG_DISABLED)
+		AddTextOption("Hours Spent Studying", dm_Utils.FloatToHours(StateRef.StudySessionStats_GetHoursStudying()), OPTION_FLAG_DISABLED)
 		AddEmptyOption()
 	EndFunction
 	Function AddProgressReport()
