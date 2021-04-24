@@ -17,7 +17,7 @@ If you have a book, you can study it. Go have a seat somewhere and start a study
 ### Spell Tome Loss
 While studying, you may over use the spell tome. Torn out pages, spill drinks on others, ... The spell tome may be unusable anymore!
 - A chance to lose the the spell tome after studying.
-  - The chance increase for longer study sessions.
+  - The chance increases for longer study sessions.
 - After learning everything the spell tome has to offer you may decide to throw it away.
 
 ### Exhaustion
@@ -52,3 +52,11 @@ Some times you are more focused than others. If you are more focused you study t
 - No compatbility patch required for new spell tomes added by other mods mods
 - Does not touch any spell tome or spell records. So should be compatible with any mods that alter those records.
 - This mod uses various keywords to do calclate the modifiers. It shouldn't be much of an issue compatability wise though.
+
+## Dependencies
+- [SKSE](https://skse.silverlock.org/)
+- [SkyUI](https://www.nexusmods.com/skyrimspecialedition/mods/12604)
+- [Don't Eat Spell Tomes](https://www.nexusmods.com/skyrimspecialedition/mods/43095)
+- [JContainers SE](https://www.nexusmods.com/skyrimspecialedition/mods/16495)
+- [powerofthree's Papyrus Extender](https://www.nexusmods.com/skyrimspecialedition/mods/22854)
+- [PapyrusUtil SE](https://www.nexusmods.com/skyrimspecialedition/mods/13048)
