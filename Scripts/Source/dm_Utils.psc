@@ -2,9 +2,9 @@ Scriptname dm_Utils Hidden
 {Some utility functions used through out the code}
 
 ; Transforms float to string with with certain precision
-string Function FloatToString(float val, int precision = 2) global ; val = 0.0625
-    int decimalUnit = Math.pow(10, precision) as int ; 10^2 = 100
-    int fixedDecimalValue = (val * decimalUnit) as int ; 0.0625*100 = 6.25
+string Function FloatToString(float val, int precision = 2) global
+    int decimalUnit = Math.pow(10, precision) as int
+    int fixedDecimalValue = (val * decimalUnit) as int
     Return (fixedDecimalValue / decimalUnit) + "." + AppendFillCharacter(fixedDecimalValue % decimalUnit, "0", precision)
 EndFunction
 
