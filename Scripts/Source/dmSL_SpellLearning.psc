@@ -12,12 +12,25 @@ dm_BasePlayerAttribute Property FocusMod Auto
 
 Spell Property dmSL_NewSpellBuff Auto
 
+Keyword Property dmSL_LocMajorBoost Auto
+Keyword Property dmSL_LocMinorBoost Auto
+Keyword Property dmSL_LocLesserBoost Auto
+Keyword Property dmSL_LocLesserDebuff Auto
+Keyword Property dmSL_LocMinorDebuff Auto
+Keyword Property dmSL_LocMajorDebuff Auto
+
 ; Auto Set Properties
 Actor Property PlayerRef Auto
 
 MagicEffect Property RestedSkillEffect Auto
 MagicEffect Property RestedWellSkillEffect Auto
 MagicEffect Property RestedMarriageSkillEffect Auto
+
+Keyword Property LocTypeInn Auto
+Keyword Property LocTypePlayerHouse Auto
+Keyword Property LocTypeHouse Auto
+Keyword Property LocTypeDungeon Auto
+Keyword Property LocTypeCity Auto
 
 Auto State Idle
     Event OnBeginState()
@@ -267,8 +280,18 @@ float Function CalculateFocusFactor()
 
     ; Location Focus
     Location loc = PlayerRef.GetCurrentLocation()
-    If (loc.HasKeyword(LocTypeInn))
-        ; code
+    If (loc.HasKeyword(dmSL_LocMajorBoost))
+        focus += 30.0
+    ElseIf (loc.HasKeyword(dmSL_LocMajorBoost) || loc.HasKeyword(LocTypePlayerHouse))
+        focus += 15.0
+    ElseIf (loc.HasKeyword(dmSL_LocLesserBoost) || loc.HasKeyword(LocTypeInn) || loc.HasKeyword(LocTypeHouse))
+        focus += 5.0
+    ElseIf (loc.HasKeyword(dmSL_LocLesserDebuff) || loc.HasKeyword(LocTypeCity))
+        focus += 5.0
+    ElseIf (loc.HasKeyword(dmSL_LocMinorDebuff))
+        focus += 15.0
+    ElseIf (loc.HasKeyword(dmSL_LocMajorDebuff) || loc.HasKeyword(LocTypeDungeon))
+        focus = 30.0
     EndIf
 
     focus = PapyrusUtil.ClampFloat(focus, -50.0, 120.0)
