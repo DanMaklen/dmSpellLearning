@@ -291,7 +291,7 @@ float Function CalculateFocusFactor()
     ElseIf (loc.HasKeyword(dmSL_LocMinorDebuff))
         focus += 15.0
     ElseIf (loc.HasKeyword(dmSL_LocMajorDebuff) || loc.HasKeyword(LocTypeDungeon))
-        focus = 30.0
+        focus += 30.0
     EndIf
 
     focus = PapyrusUtil.ClampFloat(focus, -50.0, 120.0)

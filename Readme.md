@@ -43,22 +43,12 @@ Some times you are more focused than others. If you are more focused you study t
 - Your focus is affected by where you study:
   - Some locations give various amounts of boosts to your focus. Classified under 3 tierd (lesser, minor and major).
   - Some locations give various amounts of debuff to your focus. Classified under 3 tierd (lesser, minor and major).
-  - Inns count as lesser boost location.
-  - Player houses count as minor boost location.
+  - Inns count as lesser boost locations.
+  - Player houses count as minor boost locations.
+  - Hostile interriors count as major debuff locations.
 - *Warning*! If you are too focused you get more exhausted.
-
-- Focus Potions
-- Where you study affects your focus:
-    - Inns give slight focus boost
-    - Player home give focus boost
-    - College of winterhoold give major focus boost
-    - Libraries give major focus boost
-    - Loose focus in city outdoors
 
 ## Compatability
 - No compatbility patch required for new spell tomes added by other mods mods
 - Does not touch any spell tome or spell records. So should be compatible with any mods that alter those records.
 - This mod uses various keywords to do calclate the modifiers. It shouldn't be much of an issue compatability wise though.
-
-## Ideas & Future Improvements
-- College of Winterhold Quest based Buffs
