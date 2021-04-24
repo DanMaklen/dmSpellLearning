@@ -99,23 +99,12 @@ State Studying
     EndEvent
     Event OnEndState()
         UXRef.EndStudyAnimation()
-        MiscUtil.PrintConsole("Ending Study State...")
         Spell spellLearned = StateRef.StudySession_GetSpellLearned()
         float sessionDuration = StateRef.StudySession_GetDuration()
-
-        MiscUtil.PrintConsole("spellLearned: " + spellLearned)
-        MiscUtil.PrintConsole("sessionDuration: " + sessionDuration)
 
         float proficiency = CalculateSpellProficiency(spellLearned)
         float exhaustionIncrease = sessionDuration * dmSL_Config.GetExhaustionBaseFactor() * (1 + proficiency)
         Exhaustion.Mod(exhaustionIncrease)
-
-        MiscUtil.PrintConsole("dmSL_Config.GetExhaustionBaseFactor(): " + dmSL_Config.GetExhaustionBaseFactor())
-        MiscUtil.PrintConsole("Exhaustion: " + Exhaustion)
-        MiscUtil.PrintConsole("Exhaustion.GetValue(): " + Exhaustion.GetValue())
-
-        MiscUtil.PrintConsole("proficiency: " + proficiency)
-        MiscUtil.PrintConsole("exhaustionIncrease: " + exhaustionIncrease)
 
         float spellTomeLossProbability = dmSL_Config.GetSpellTomeLossRate() * sessionDuration
         float randomNumber = Utility.RandomFloat()
