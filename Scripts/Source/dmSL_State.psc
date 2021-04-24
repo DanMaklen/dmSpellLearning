@@ -125,3 +125,33 @@ EndFunction
         Function StudySession_SetDidLoseSpellTome(bool didLoseSpellTome)
             JValue.solveIntSetter(self.studySession, ".DidLoseSpellTome", didLoseSpellTome as int, true)
         EndFunction
+    ; Statistics
+        int Function StudySessionStats_GetCompletedSessionCount()
+            return JValue.solveInt(self.studySession, ".Stats.CompletedSessionCount", 0)
+        EndFunction
+        Function StudySessionStats_SetCompletedSessionCount(int val)
+            JValue.solveIntSetter(self.studySession, ".Stats.CompletedSessionCount", val, true)
+        EndFunction
+        Function StudySessionStats_ModCompletedSessionCount(int modVal)
+            StudySessionStats_SetCompletedSessionCount(StudySessionStats_GetCompletedSessionCount() + modVal)
+        EndFunction
+        
+        int Function StudySessionStats_GetSpellsLearned()
+            return JValue.solveInt(self.studySession, ".Stats.SpellsLearned", 0)
+        EndFunction
+        Function StudySessionStats_SetSpellsLearned(int val)
+            JValue.solveIntSetter(self.studySession, ".Stats.SpellsLearned", val, true)
+        EndFunction
+        Function StudySessionStats_ModSpellsLearned(int modVal)
+            StudySessionStats_SetSpellsLearned(StudySessionStats_GetSpellsLearned() + modVal)
+        EndFunction
+
+        float Function StudySessionStats_GetHoursStudying()
+            return JValue.solveFlt(self.studySession, ".Stats.HoursStudying", 0.0)
+        EndFunction
+        Function StudySessionStats_SetHoursStudying(float val)
+            JValue.solveFltSetter(self.studySession, ".Stats.HoursStudying", val, true)
+        EndFunction
+        Function StudySessionStats_ModHoursStudying(float modVal)
+            StudySessionStats_SetHoursStudying(StudySessionStats_GetHoursStudying() + modVal)
+        EndFunction

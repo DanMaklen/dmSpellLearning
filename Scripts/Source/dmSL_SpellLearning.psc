@@ -15,11 +15,6 @@ Actor Property PlayerRef Auto
 Auto State Idle
     Event OnBeginState()
         StateRef.StudySession_SetState(StateRef.StudySessionState_Idle)
-        StateRef.StudySession_SetSpellLearned(none)
-        StateRef.StudySession_SetSpellTome(none)
-        StateRef.StudySession_SetSpellTomeContainer(none)
-        StateRef.StudySession_SetDuration(0.0)
-        StateRef.StudySession_SetCooldownEndAt(0.0)
     EndEvent
     Event OnSpellTomeRead(Book spellTome, Spell spellLearned, ObjectReference spellTomeContainer)
         If (!spellTomeContainer)
@@ -99,8 +94,12 @@ State Studying
     EndEvent
     Event OnEndState()
         UXRef.EndStudyAnimation()
+
         Spell spellLearned = StateRef.StudySession_GetSpellLearned()
         float sessionDuration = StateRef.StudySession_GetDuration()
+
+        StateRef.StudySessionStats_ModCompletedSessionCount(1)
+        StateRef.StudySessionStats_ModHoursStudying(sessionDuration)
 
         float proficiency = CalculateSpellProficiency(spellLearned)
         float exhaustionIncrease = sessionDuration * dmSL_Config.GetExhaustionBaseFactor() * (1 + proficiency)
@@ -125,6 +124,7 @@ State LearnSpell
 
         PlayerRef.AddSpell(spellLearned, false)
         StateRef.ProgressState_RemoveSpellEntry(spellLearned)
+        StateRef.StudySessionStats_ModSpellsLearned(1)
         UXRef.NotifyLearnedNewSpell(spellLearned)
 
         If (!didLoseSpellTome && dmSL_Config.GetSpellTomeLossOnLearn())

@@ -18,7 +18,6 @@ Event OnValueChanged(float newVal)
     Else
         PlayerRef.AddSpell(dmSL_ExhaustionDebuff, false)
     EndIf
-    Debug.Notification("Study Exhaustion: " + dm_Utils.FloatToString(newVal))
 EndEvent
 
 float Function CorrectedValue(float val)
