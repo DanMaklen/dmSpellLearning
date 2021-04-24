@@ -37,6 +37,9 @@ EndFunction
         bool Function ProgressState_HasSpellEntry(Spell spellLearned)
             return JFormMap.hasKey(self.progressState, spellLearned)
         EndFunction
+        int Function ProgressState_GetSpellEntryCount()
+            return JFormMap.count(self.progressState)
+        EndFunction
 
         float Function ProgressState_GetProgress(Spell spellLearned)
             If (!ProgressState_HasSpellEntry(spellLearned))
