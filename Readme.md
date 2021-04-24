@@ -5,8 +5,6 @@ This is a Skyrim Mod. It's a personal take on how I invision learning new spells
 - Learn spells gradually through study sessions
 - Almost all variables are configurable in the MCM
 - MCM Checklist for learning all spells (wil Spell Tome) in the game
-- No compatbility patch required for mods adding new spell tomes
-- Does not touch any spell tome or spell records. So should be compatible with any mods that alter those records.
 
 ## Mechanics
 ### Study Session
@@ -16,6 +14,12 @@ If you have a book, you can study it. Go have a seat somewhere and start a study
 - You can study multiple spells in parralel, but only one per study session.
 - There is a cooldown between sessions. (min 1 hour, max. 48 hours)
 
+### Spell Tome Loss
+While studying, you may over use the spell tome. Torn out pages, spill drinks on others, ... The spell tome may be unusable anymore!
+- A chance to lose the the spell tome after studying.
+  - The chance increase for longer study sessions.
+- After learning everything the spell tome has to offer you may decide to throw it away.
+
 ### Exhaustion
 If you have just finished a study session, you must rest a bit.
 - The exhaustion parameter scales with:
@@ -24,28 +28,31 @@ If you have just finished a study session, you must rest a bit.
   - *School Proficency*: More proficency in the spell's school leads to less exhaustion.
 - Sleeping reduces portion of the accumlated exhaustion.
 - Increased exhausion can give various debuffs:
-  - Increased study cooldown
+  - Increase study cooldown.
+  - Decrease focus
+
+### Focus
+Some times you are more focused than others. If you are more focused you study the spell more effeciently.
+- Your focus may slightly increase or decrease randomly.
+- You focus better while sitting.
+- You focus better when you are rested.
+- You focus better if you learned a new spell recently
+- You focus less if there are a lot of people around you.
+- You focus less if you are studying multiple spells in parralel.
+- You focus better if you focus your study on few spells.
+- *Warning*! If you are too focused you get more exhausted.
+
+- Focus Potions
+- Where you study affects your focus:
+    - Inns give slight focus boost
+    - Player home give focus boost
+    - College of winterhoold give major focus boost
+    - Libraries give major focus boost
+    - Loose focus in city outdoors
+
+## Compatability
+- No compatbility patch required for new spell tomes added by other mods mods
+- Does not touch any spell tome or spell records. So should be compatible with any mods that alter those records.
 
 ## Ideas & Future Improvements
-- Tome loss:
-    - Learning in Water Chance
-    - Random chance during study session
-    - Scale with session duration
-- Focus Mechanic:
-    - More focus while sitting
-    - More focus when rested
-    - Less focus while riding horse
-    - Focus Potions
-    - Focus buff if learned a new spell recently
-        - Scales with School Proficiency and Spell Complexity
-    - Location Based Focus
-        - Inns give slight focus boost
-        - Player home give focus boost
-        - College of winterhoold give major focus boost
-        - Libraries give major focus boost
-        - Loose focus in city outdoors
-    - Loose focus with surrounding actor count
-    - More focus during morning/night time (Configurable)
-- Race Based Buff
-- Perk Based Buff
 - College of Winterhold Quest based Buffs

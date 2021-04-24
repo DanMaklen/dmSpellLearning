@@ -226,7 +226,7 @@ EndEvent
 		Function AddExhaustion()
 			AddHeaderOption("Exhaustion")
 			AddSliderOptionST("ExhaustionBaseFactor", "Base Factor", dmSL_Config.GetExhaustionBaseFactor(), "{2}")
-			AddSliderOptionST("ExhaustionSleepRecoveryRate", "Sleep Recovery Rate", dmSL_Config.GetExhaustionBaseFactor(), "{2}")
+			AddSliderOptionST("ExhaustionSleepRecoveryRate", "Sleep Recovery Rate", dmSL_Config.GetExhaustionSleepRecoveryRate(), "{2}")
 		EndFunction
 		State ExhaustionBaseFactor
 			Event OnSliderOpenST()

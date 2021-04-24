@@ -8,9 +8,16 @@ dmSL_UX Property UXRef Auto
 ; Player Attributes
 dm_BasePlayerAttribute Property CooldownMult Auto
 dm_BasePlayerAttribute Property Exhaustion Auto
+dm_BasePlayerAttribute Property FocusMod Auto
+
+Spell Property dmSL_NewSpellBuff Auto
 
 ; Auto Set Properties
 Actor Property PlayerRef Auto
+
+MagicEffect Property RestedSkillEffect Auto
+MagicEffect Property RestedWellSkillEffect Auto
+MagicEffect Property RestedMarriageSkillEffect Auto
 
 Auto State Idle
     Event OnBeginState()
@@ -74,14 +81,23 @@ State Studying
 
         Spell spellLearned = StateRef.StudySession_GetSpellLearned()
         float sessionDuration = StateRef.StudySession_GetDuration()
-
-        float progressDelta = CalculateLearnRate(spellLearned) * sessionDuration
         float progress = StateRef.ProgressState_GetProgress(spellLearned)
+
+        float learnRate = CalculateLearnRate(spellLearned)
+        float focusFactor = CalculateFocusFactor()
+        float progressDelta = learnRate * sessionDuration * focusFactor
+
         progress = PapyrusUtil.ClampFloat(progress + progressDelta, 0.0, 1.0)
         StateRef.ProgressState_SetProgress(spellLearned, progress)
         
         UXRef.NotifyProgress(spellLearned, progress, progressDelta)
         UXRef.AdvanceGameTime(sessionDuration)
+
+        If (focusFactor > 1.1)
+            Exhaustion.Mod(20.0)
+        ElseIf (focusFactor > 1.0)
+            Exhaustion.Mod(10.0)
+        EndIf
 
         If (progress >= 1.0)
             GoToState("LearnSpell")
@@ -126,6 +142,8 @@ State LearnSpell
         StateRef.ProgressState_RemoveSpellEntry(spellLearned)
         StateRef.StudySessionStats_ModSpellsLearned(1)
         UXRef.NotifyLearnedNewSpell(spellLearned)
+
+        dmSL_NewSpellBuff.Cast(PlayerRef)
 
         If (!didLoseSpellTome && dmSL_Config.GetSpellTomeLossOnLearn())
             RemoveSpellTome()
@@ -203,6 +221,58 @@ float Function CalculateSpellProficiency(Spell spellLearned)
 EndFunction
 float Function CalculateMagicEffectProficiency(MagicEffect effect)
     return (PlayerRef.GetAV(effect.GetAssociatedSkill()) - effect.GetSkillLevel()) / 100
+EndFunction
+float Function CalculateFocusFactor()
+    float focus = 0.0
+
+    ; Random Variable
+    focus += Utility.RandomFloat(-10.0, 10.0)
+
+    ; FocusMod (From MagicEffects)
+    focus += FocusMod.GetValue()
+
+    ; Sitting Bonus
+    If (PlayerRef.GetSitState() == 3)
+        focus += 10.0
+    EndIf
+
+    ; Close by Actor Count
+    int closeByActorCount = PO3_SKSEFunctions.GetActorsByProcessingLevel(0).Length
+    If (closeByActorCount > 10)
+        focus -= 20.0
+    ElseIf (closeByActorCount > 5)
+        focus -= 10.0
+    EndIf
+
+    ; Spell Diversity Focus
+    int spellsInProgressCount = StateRef.ProgressState_GetSpellEntryCount()
+    If (spellsInProgressCount > 10)
+        focus -= 50.0
+    ElseIf (spellsInProgressCount > 5)
+        focus -= 20.0
+    ElseIf (spellsInProgressCount > 3)
+        focus -= 5.0
+    ElseIf (spellsInProgressCount < 2)
+        focus += 10.0
+    EndIf
+
+    ; Rested Focus
+    If (PlayerRef.HasMagicEffect(RestedSkillEffect))
+		focus += 5.0
+	ElseIf (PlayerRef.HasMagicEffect(RestedWellSkillEffect))
+		focus += 10.0
+    ElseIf (PlayerRef.HasMagicEffect(RestedMarriageSkillEffect))
+		focus += 15.0
+	EndIf
+
+    ; Location Focus
+    Location loc = PlayerRef.GetCurrentLocation()
+    If (loc.HasKeyword(LocTypeInn))
+        ; code
+    EndIf
+
+    focus = PapyrusUtil.ClampFloat(focus, -50.0, 120.0)
+    return 1 + focus / 100
 EndFunction
 
 ; Setup
