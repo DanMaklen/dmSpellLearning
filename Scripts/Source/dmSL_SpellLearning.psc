@@ -73,7 +73,7 @@ Auto State Idle
             UXRef.NotifyStudyConditionNotMet(spellLearned, UXRef.ConditionNotMetReason_NotSitting)
             return
         EndIf
-        
+
         float sessionDuration = GetStudySessionDuration(spellLearned)
         If (sessionDuration <= 0.0)
             return  ; Cancle
