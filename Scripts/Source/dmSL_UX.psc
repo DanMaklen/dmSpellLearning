@@ -30,18 +30,18 @@ Function NotifyProgress(Spell spellLearned, float progress, float progressDelta)
     Debug.Notification("Learning spell: " + spellLearned.GetName() + ". Progress: " + dm_Utils.FloatToPercentage(progress) + " (+" + dm_Utils.FloatToPercentage(progressDelta) + ")")
 EndFunction
 Function NotifyCooldown(float remCooldown)
-    Debug.Notification("Cannot study for " + Math.Ceiling(remCooldown) + " more hours.")
+    Debug.Notification("Cannot study for the next " + dm_Utils.FloatToHours(remCooldown))
 EndFunction
 
 ; Study Condition Not Met
     string Property ConditionNotMetReason_SpellKnown = "You already know this spell" Auto Hidden
     string Property ConditionNotMetReason_Tresspassing = "You are tresspassing" Auto Hidden
-    string Property ConditionNotMetReason_Outdoor = "You are outdoor" Auto Hidden
+    string Property ConditionNotMetReason_Outdoor = "You are outdoors" Auto Hidden
     string Property ConditionNotMetReason_InCombat = "You are in combat" Auto Hidden
     string Property ConditionNotMetReason_Swimming = "You are swimming" Auto Hidden
     string Property ConditionNotMetReason_Sneaking = "You are sneaking" Auto Hidden
     string Property ConditionNotMetReason_NotSitting = "You are not sitting" Auto Hidden
-    string Property ConditionNotMetReason_ShelfReading = "You are shelf reading" Auto Hidden
+    string Property ConditionNotMetReason_ShelfReading = "You are skimming" Auto Hidden
     Function NotifyStudyConditionNotMet(Spell spellLearned, string reason)
         Debug.Notification("Cannot study " + spellLearned.GetName() + ": " + reason + ".")
     EndFunction

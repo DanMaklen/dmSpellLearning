@@ -12,6 +12,14 @@ string Function FloatToPercentage(float val, int precision = 2) global
     return FloatToString(val * 100, precision) + "%"
 EndFunction
 
+string Function FloatToHours(float val) global
+    string hours = "Hour"
+    If (val > 1)
+        hours += "s"
+    EndIf
+    return Math.Ceiling(val) + hours
+EndFunction
+
 string Function AppendFillCharacter(string str, string char, int width) global
     int count = width - StringUtil.GetLength(str)
     While (count > 0)
