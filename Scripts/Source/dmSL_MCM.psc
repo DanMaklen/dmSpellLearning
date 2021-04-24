@@ -36,32 +36,17 @@ EndEvent
 		SetCursorFillMode(TOP_TO_BOTTOM)
 		AddBasicConfiguration()
 		AddStudySessionConditions()
+		SetCursorPosition(1)
+		AddSpellTomeLoss()
 		AddExhaustion()
 	EndFunction
 
 	; Basic Config
 		Function AddBasicConfiguration()
 			AddHeaderOption("Basic Configuration")
-			AddToggleOptionST("ConsumeTomeOnLearn", "Consume Spell Tome on Learn", dmSL_Config.GetConsumeTomeOnLearn())
 			AddSliderOptionST("BaseLearnRate", "Base Learning Rate", dmSL_Config.GetBaseLearnRate(), "{2}")
 			AddSliderOptionST("CooldownFactor", "Cooldown Factor", dmSL_Config.GetCooldownBaseFactor(), "{2}")
 		EndFunction
-		State ConsumeTomeOnLearn
-			Event OnSetToggleValue(bool newValue)
-				dmSL_Config.SetConsumeTomeOnLearn(newValue)
-				SetToggleOptionValueST(newValue)
-			EndEvent
-			Event OnSelectST()
-				OnSetToggleValue(!dmSL_Config.GetConsumeTomeOnLearn())
-			EndEvent
-			Event OnHighlightST()
-				string infoText = "If enabled, Spell Tome will be consumed when the spell is learned succesfully."
-				SetInfoTextWithDefaultToggle(infoText, dmSL_Config.GetDefaultConsumeTomeOnLearn())
-			EndEvent
-			Event OnDefaultST()
-				OnSetToggleValue(dmSL_Config.GetDefaultConsumeTomeOnLearn())
-			EndEvent
-		EndState
 		State BaseLearnRate
 			Event OnSliderOpenST()
 				SetSliderDialogStartValue(dmSL_Config.GetBaseLearnRate())
@@ -102,6 +87,49 @@ EndEvent
 			EndEvent
 			Event OnDefaultST()
 				OnSliderAcceptST(dmSL_Config.GetDefaultCooldownBaseFactor())
+			EndEvent
+		EndState
+	; Spell Tome Loss
+		Function AddSpellTomeLoss()
+			AddHeaderOption("Spell Tome Loss")
+			AddToggleOptionST("SpellTomeLossOnLearn", "Consume Spell Tome on Learn", dmSL_Config.GetSpellTomeLossOnLearn())
+			AddSliderOptionST("SpellTomeLossRate", "Rate During Study Session", dmSL_Config.GetSpellTomeLossRate() * 100, "{2}%")
+		EndFunction
+		State SpellTomeLossOnLearn
+			Event OnSetToggleValue(bool newValue)
+				dmSL_Config.SetSpellTomeLossOnLearn(newValue)
+				SetToggleOptionValueST(newValue)
+			EndEvent
+			Event OnSelectST()
+				OnSetToggleValue(!dmSL_Config.GetSpellTomeLossOnLearn())
+			EndEvent
+			Event OnHighlightST()
+				string infoText = "If enabled, Spell Tome will be consumed when the spell is learned succesfully."
+				SetInfoTextWithDefaultToggle(infoText, dmSL_Config.GetDefaultSpellTomeLossOnLearn())
+			EndEvent
+			Event OnDefaultST()
+				OnSetToggleValue(dmSL_Config.GetDefaultSpellTomeLossOnLearn())
+			EndEvent
+		EndState
+		State SpellTomeLossRate
+			Event OnSliderOpenST()
+				SetSliderDialogStartValue(dmSL_Config.GetSpellTomeLossRate())
+				SetSliderDialogDefaultValue(dmSL_Config.GetDefaultSpellTomeLossRate())
+				SetSliderDialogRange(0.0, 100.0)
+				SetSliderDialogInterval(0.25)
+			EndEvent
+			Event OnSliderAcceptST(float val)
+				dmSL_Config.SetSpellTomeLossRate(val / 100)
+				SetSliderOptionValueST(val, "{2}%")
+			EndEvent
+			Event OnHighlightST()
+				string infoText = \
+					"Controls the chance of loosing the spell tome during study.\n" + \
+					"Note: This is scales (linearly) with the session duration. For example, 1.25% leads to approximatly 10% for an 8 hour session."
+				SetInfoTextWithDefaultPercent(infoText, dmSL_Config.GetDefaultSpellTomeLossRate())
+			EndEvent
+			Event OnDefaultST()
+				OnSliderAcceptST(dmSL_Config.GetDefaultSpellTomeLossRate() * 100)
 			EndEvent
 		EndState
 	; Study Session Conditions
@@ -475,6 +503,9 @@ EndEvent
 	EndFunction
 	Function SetInfoTextWithDefaultFloat(string info, float defaultVal)
 		SetInfoTextWithDefaultString(info, dm_Utils.FloatToString(defaultVal))
+	EndFunction
+	Function SetInfoTextWithDefaultPercent(string info, float defaultVal)
+		SetInfoTextWithDefaultString(info, dm_Utils.FloatToPercentage(defaultVal))
 	EndFunction
 	Function SetInfoTextWithDefaultInt(string info, int defaultVal)
 		SetInfoTextWithDefaultString(info, defaultVal)

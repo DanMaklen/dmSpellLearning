@@ -118,3 +118,10 @@ EndFunction
         Function StudySession_SetCooldownEndAt(float cooldownEndAt)
             JValue.solveFltSetter(self.studySession, ".CooldownEndAt", cooldownEndAt, true)
         EndFunction
+
+        bool Function StudySession_GetDidLoseSpellTome()
+            return JValue.solveInt(self.studySession, ".DidLoseSpellTome", false as int) as bool
+        EndFunction
+        Function StudySession_SetDidLoseSpellTome(bool didLoseSpellTome)
+            JValue.solveIntSetter(self.studySession, ".DidLoseSpellTome", didLoseSpellTome as int, true)
+        EndFunction

@@ -99,13 +99,31 @@ State Studying
     EndEvent
     Event OnEndState()
         UXRef.EndStudyAnimation()
-
+        MiscUtil.PrintConsole("Ending Study State...")
         Spell spellLearned = StateRef.StudySession_GetSpellLearned()
         float sessionDuration = StateRef.StudySession_GetDuration()
+
+        MiscUtil.PrintConsole("spellLearned: " + spellLearned)
+        MiscUtil.PrintConsole("sessionDuration: " + sessionDuration)
+
         float proficiency = CalculateSpellProficiency(spellLearned)
         float exhaustionIncrease = sessionDuration * dmSL_Config.GetExhaustionBaseFactor() * (1 + proficiency)
-
         Exhaustion.Mod(exhaustionIncrease)
+
+        MiscUtil.PrintConsole("dmSL_Config.GetExhaustionBaseFactor(): " + dmSL_Config.GetExhaustionBaseFactor())
+        MiscUtil.PrintConsole("Exhaustion: " + Exhaustion)
+        MiscUtil.PrintConsole("Exhaustion.GetValue(): " + Exhaustion.GetValue())
+
+        MiscUtil.PrintConsole("proficiency: " + proficiency)
+        MiscUtil.PrintConsole("exhaustionIncrease: " + exhaustionIncrease)
+
+        float spellTomeLossProbability = dmSL_Config.GetSpellTomeLossRate() * sessionDuration
+        float randomNumber = Utility.RandomFloat()
+
+        If (randomNumber < spellTomeLossProbability)
+            RemoveSpellTome()
+            StateRef.StudySession_SetDidLoseSpellTome(true)
+        EndIf
     EndEvent
 EndState
 
@@ -114,15 +132,14 @@ State LearnSpell
         StateRef.StudySession_SetState(StateRef.StudySessionState_LearnSpell)
 
         Spell spellLearned = StateRef.StudySession_GetSpellLearned()
-        Book spellTome = StateRef.StudySession_GetSpellTome()
-        ObjectReference spellTomeContainer = StateRef.StudySession_GetSpellTomeContainer()
+        bool didLoseSpellTome = StateRef.StudySession_GetDidLoseSpellTome()
 
         PlayerRef.AddSpell(spellLearned, false)
         StateRef.ProgressState_RemoveSpellEntry(spellLearned)
         UXRef.NotifyLearnedNewSpell(spellLearned)
 
-        If (dmSL_Config.GetConsumeTomeOnLearn())
-            spellTomeContainer.RemoveItem(spellTome, 1, true)
+        If (!didLoseSpellTome && dmSL_Config.GetSpellTomeLossOnLearn())
+            RemoveSpellTome()
         EndIf
 
         GoToState("Cooldown")
@@ -167,6 +184,13 @@ Event OnSleepStop(bool isInterrupted)
     EndIf
     recovery = 0.0
 EndEvent
+
+; Spell Tome Loss
+Function RemoveSpellTome()
+    Book spellTome = StateRef.StudySession_GetSpellTome()
+    ObjectReference spellTomeContainer = StateRef.StudySession_GetSpellTomeContainer()
+    spellTomeContainer.RemoveItem(spellTome, 1)
+EndFunction
 
 ; Calculations
 float Function GetStudySessionDuration(Spell spellLearned)
