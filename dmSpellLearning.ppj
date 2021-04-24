@@ -3,12 +3,12 @@
     Flags="TESV_Papyrus_Flags.flg" 
     Game="sse" 
     Output="Scripts" 
-    Optimize="false" 
-    Release="false" 
-    Final="false"
-    Anonymize="false"
-    Package="false"
-    Zip="false">
+    Optimize="true" 
+    Release="true" 
+    Final="true"
+    Anonymize="true"
+    Package="true"
+    Zip="true">
     <Variables>
         <Variable Name="modName" Value="dmSpellLearning"/>
         <Variable Name="gamePath" Value="C:\Program Files (x86)\Steam\steamapps\common\Skyrim Special Edition"/>
@@ -33,10 +33,10 @@
             <Include>*.bsa</Include>
         </ZipFile>
     </ZipFiles>
-    <PreBuildEvent Description="" UseInBuild="true">
+    <PreBuildEvent Description="" UseInBuild="false">
         <Command>xcopy /Q /E /Y /D @gamePath/Data/@modName.esp .</Command>
     </PreBuildEvent>
-    <PostBuildEvent Description="" UseInBuild="true">
+    <PostBuildEvent Description="" UseInBuild="false">
         <Command>xcopy /Q /E /Y /D . @deployPath</Command>
     </PostBuildEvent >
 </PapyrusProject>
