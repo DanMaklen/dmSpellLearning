@@ -33,10 +33,12 @@
             <Include>*.bsa</Include>
         </ZipFile>
     </ZipFiles>
-    <PreBuildEvent Description="" UseInBuild="false">
-        <Command>xcopy /Q /E /Y /D @gamePath/Data/@modName.esp .</Command>
+    <PreBuildEvent Description="" UseInBuild="true">
+        <Command>xcopy /Q /Y /D "@gamePath\Data\@modName.esp" .</Command>
     </PreBuildEvent>
-    <PostBuildEvent Description="" UseInBuild="false">
-        <Command>xcopy /Q /E /Y /D . @deployPath</Command>
+    <PostBuildEvent Description="" UseInBuild="true">
+        <Command>xcopy /Q /S /Y /D *.pex @deployPath</Command>
+        <Command>xcopy /Q /S /Y /D *.psc @deployPath</Command>
+        <Command>xcopy /Q /S /Y /D *.esp @deployPath</Command>
     </PostBuildEvent >
 </PapyrusProject>
