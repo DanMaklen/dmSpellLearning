@@ -1,4 +1,4 @@
-<?xml version='1.0'?><!-- Game is either sse, tesv, or fo4 -->
+<?xml version='1.0'?>
 <PapyrusProject xmlns="PapyrusProject.xsd" 
     Flags="TESV_Papyrus_Flags.flg" 
     Game="sse" 
@@ -40,5 +40,5 @@
         <Command>xcopy /Q /S /Y /D *.pex @deployPath</Command>
         <Command>xcopy /Q /S /Y /D *.psc @deployPath</Command>
         <Command>xcopy /Q /S /Y /D *.esp @deployPath</Command>
-    </PostBuildEvent >
+    </PostBuildEvent>
 </PapyrusProject>
